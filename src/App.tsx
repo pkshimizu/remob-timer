@@ -1,5 +1,6 @@
 import { Box, Button, Container, makeStyles } from '@material-ui/core'
 import { KeyboardOutlined } from '@material-ui/icons'
+import { Session } from './models/session'
 
 const useStyles = makeStyles({
   status: {
@@ -23,6 +24,12 @@ const useStyles = makeStyles({
 })
 
 function App() {
+  const path = window.location.pathname
+  if (path === '/') {
+    const session = new Session()
+    // セッションを登録する
+    window.location.pathname = `/${session.id}`
+  }
   const classes = useStyles()
   const driver = 'Typist Name'
   const remainingTime = 365
@@ -40,10 +47,10 @@ function App() {
           </div>
         </Box>
         <Box display={'flex'} alignItems={'center'} className={classes.actions}>
-          <Button variant={'contained'} color={'primary'}>
+          <Button variant={'outlined'} color={'primary'}>
             Member Settings
           </Button>
-          <Button variant={'contained'} color={'primary'}>
+          <Button variant={'outlined'} color={'primary'}>
             Interval Settings
           </Button>
         </Box>

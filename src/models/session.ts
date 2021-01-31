@@ -14,7 +14,7 @@ export class Session {
     }
   }
   private static generateId() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'.split('')
+    const chars = 'abcdefghijklmnopqrstuvwxyz234567'.split('')
     return randomBytes(16).reduce((p, i) => p + chars[i % 32], '')
   }
 }
