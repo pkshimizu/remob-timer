@@ -25,7 +25,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint:fix": "prettier --write ./src/**/*.{ts,tsx}"
   },
   "eslintConfig": {
     "extends": [
@@ -51,7 +52,7 @@
     "prettier": "^2.2.1"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "src/**/*.{ts,tsx}": [
       "prettier --write"
     ]
   },
