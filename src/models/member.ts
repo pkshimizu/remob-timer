@@ -1,7 +1,6 @@
 export enum MemberType {
   Expert,
   Navigator,
-  Driver,
 }
 
 export class Member {

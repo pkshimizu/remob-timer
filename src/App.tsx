@@ -1,15 +1,18 @@
 import { Box, Button, Container, makeStyles } from '@material-ui/core'
 import { KeyboardOutlined } from '@material-ui/icons'
 import { Session } from './models/session'
+import { useSelector } from 'react-redux'
+import { RootState } from './store/reducers'
+import { IntervalState } from './models/interval_state'
 
 const useStyles = makeStyles({
   status: {
     fontSize: 64,
   },
-  driverIcon: {
+  typistIcon: {
     fontSize: 64,
   },
-  driver: {
+  typist: {
     fontSize: 64,
   },
   remainingTime: {
@@ -30,16 +33,19 @@ function App() {
     // セッションを登録する
     window.location.pathname = `/${session.id}`
   }
+  const intervalState = useSelector<RootState, IntervalState>(
+    (state) => state.intervalState,
+  )
   const classes = useStyles()
-  const driver = 'Typist Name'
+  const typist = intervalState.typist
   const remainingTime = 365
   return (
     <Container>
       <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
         <div className={classes.status}>1st Interval</div>
         <Box display={'flex'} alignItems={'center'}>
-          <KeyboardOutlined className={classes.driverIcon} />
-          <div className={classes.driver}>{driver}</div>
+          <KeyboardOutlined className={classes.typistIcon} />
+          <div className={classes.typist}>{typist}</div>
         </Box>
         <Box display={'flex'} alignItems={'center'}>
           <div className={classes.remainingTime}>

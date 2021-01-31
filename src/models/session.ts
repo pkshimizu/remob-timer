@@ -1,5 +1,5 @@
 import { Member } from './member'
-import { Interval } from './Interval'
+import { Interval } from './interval'
 import { randomBytes } from 'crypto'
 
 export class Session {
