@@ -1,9 +1,10 @@
 import { Box, Button, Container, makeStyles } from '@material-ui/core'
 import { KeyboardOutlined } from '@material-ui/icons'
-import { Session } from './models/session'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { IntervalState } from './models/interval_state'
+import { createSession } from './store/sessions/actions'
+import { useEffect } from 'react'
 
 const useStyles = makeStyles({
   root: {
@@ -31,15 +32,22 @@ const useStyles = makeStyles({
 })
 
 function App() {
-  const path = window.location.pathname
-  if (path === '/') {
-    const session = new Session()
-    // セッションを登録する
-    window.location.pathname = `/${session.id}`
-  }
+  const id = useSelector<RootState, string>((state) => state.session.id)
   const intervalState = useSelector<RootState, IntervalState>(
     (state) => state.intervalState,
   )
+  const path = window.location.pathname
+  const dispatch = useDispatch()
+  useEffect(() => {
+    console.log(`path: ${path} id: ${id}`)
+    if (path === '/') {
+      if (id !== '') {
+        window.location.pathname = `/${id}`
+      } else {
+        dispatch(createSession())
+      }
+    }
+  }, [dispatch, path, id])
   const classes = useStyles()
   const typist = intervalState.typist
   const remainingTime = 365

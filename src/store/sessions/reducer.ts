@@ -1,4 +1,5 @@
 import { Session } from '../../models/session'
+import { SessionActionTypes } from './types'
 
 const initState: Session = {
   id: '',
@@ -8,7 +9,12 @@ const initState: Session = {
     shortBreakTime: 0,
   },
 }
-const sessionReducer = (state = initState /*, action */) => {
+
+const sessionReducer = (state = initState, action: SessionActionTypes) => {
+  switch (action.type) {
+    case 'SessionCreate':
+      return { ...state, id: action.payload.id }
+  }
   return state
 }
 

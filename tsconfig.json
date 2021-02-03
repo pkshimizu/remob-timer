@@ -22,7 +22,7 @@
     "jsx": "react-jsx",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": false
   },
   "include": [
     "src"
