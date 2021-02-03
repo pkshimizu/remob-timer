@@ -2,18 +2,22 @@ import { Box, Button, Container, makeStyles } from '@material-ui/core'
 import { KeyboardOutlined } from '@material-ui/icons'
 import { Session } from './models/session'
 import { useSelector } from 'react-redux'
-import { RootState } from './store/reducers'
+import { RootState } from './store'
 import { IntervalState } from './models/interval_state'
 
 const useStyles = makeStyles({
+  root: {
+    marginTop: 16,
+    marginBottom: 16,
+  },
   status: {
-    fontSize: 64,
+    fontSize: 32,
   },
   typistIcon: {
-    fontSize: 64,
+    fontSize: 32,
   },
   typist: {
-    fontSize: 64,
+    fontSize: 32,
   },
   remainingTime: {
     marginTop: 32,
@@ -40,7 +44,7 @@ function App() {
   const typist = intervalState.typist
   const remainingTime = 365
   return (
-    <Container>
+    <Container className={classes.root}>
       <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
         <div className={classes.status}>1st Interval</div>
         <Box display={'flex'} alignItems={'center'}>
