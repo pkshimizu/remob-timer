@@ -32,7 +32,9 @@ const useStyles = makeStyles({
 })
 
 function App() {
-  const id = useSelector<RootState, string>((state) => state.session.id)
+  const id = useSelector<RootState, string | undefined>(
+    (state) => state.session.id,
+  )
   const intervalState = useSelector<RootState, IntervalState>(
     (state) => state.intervalState,
   )
@@ -50,7 +52,7 @@ function App() {
   }, [dispatch, path, id])
   const classes = useStyles()
   const typist = intervalState.typist
-  const remainingTime = 365
+  const remainingTime = intervalState.remainingTime
   return (
     <Container className={classes.root}>
       <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>

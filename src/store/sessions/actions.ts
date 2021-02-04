@@ -1,6 +1,7 @@
 import { ThunkAction } from 'redux-thunk'
 import { RootState } from '../index'
 import { SessionActionTypes } from './types'
+import { Session } from '../../models/session'
 
 export const createSession = (): ThunkAction<
   void,
@@ -14,12 +15,9 @@ export const createSession = (): ThunkAction<
       .collection('sessions')
       .add({})
       .then((res: any) => {
-        console.log(res)
         dispatch({
           type: 'SessionCreate',
-          payload: {
-            id: res.id,
-          },
+          payload: new Session(res.id),
         })
       })
   }

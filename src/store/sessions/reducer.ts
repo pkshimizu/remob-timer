@@ -1,19 +1,16 @@
-import { Session } from '../../models/session'
 import { SessionActionTypes } from './types'
+import { Session } from '../../models/session'
 
 const initState: Session = {
-  id: '',
+  id: undefined,
   members: [],
-  interval: {
-    time: 0,
-    shortBreakTime: 0,
-  },
+  interval: undefined,
 }
 
 const sessionReducer = (state = initState, action: SessionActionTypes) => {
   switch (action.type) {
     case 'SessionCreate':
-      return { ...state, id: action.payload.id }
+      return action.payload
   }
   return state
 }
