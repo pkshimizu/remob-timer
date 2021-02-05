@@ -10,7 +10,7 @@ const initState: Session = {
 const sessionReducer = (state = initState, action: SessionActionTypes) => {
   switch (action.type) {
     case 'SessionCreate':
-      return action.payload
+      return action.payload.session
     case 'SessionIntervalUpdate':
       return {
         ...state,

@@ -3,7 +3,9 @@ import { Interval } from '../../models/interval'
 
 interface SessionCreateAction {
   type: 'SessionCreate'
-  payload: Session
+  payload: {
+    session: Session
+  }
 }
 
 interface SessionIntervalUpdate {
