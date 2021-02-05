@@ -2,9 +2,10 @@ import { Box, Button, Container, makeStyles } from '@material-ui/core'
 import { KeyboardOutlined } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
-import { IntervalState } from './models/interval_state'
+import { IntervalState, TimerState } from './models/interval_state'
 import { createSession, fetchSession } from './store/sessions/actions'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
+import { startInterval, stopInterval } from './store/interval_states/actions'
 
 const useStyles = makeStyles({
   root: {
@@ -31,6 +32,16 @@ const useStyles = makeStyles({
   },
 })
 
+const timerButtonLabel = (intervalState: IntervalState): string => {
+  if (intervalState.timerState === TimerState.starting) {
+    return 'Stop'
+  }
+  if (intervalState.timerState === TimerState.stopped) {
+    return 'Start'
+  }
+  return 'Unknown'
+}
+
 function App() {
   const id = useSelector<RootState, string | undefined>(
     (state) => state.session.id,
@@ -53,6 +64,15 @@ function App() {
       }
     }
   }, [dispatch, path, id])
+  const handleTimerButton = useCallback(() => {
+    if (intervalState.timerState === TimerState.starting) {
+      dispatch(stopInterval())
+    }
+    if (intervalState.timerState === TimerState.stopped) {
+      dispatch(startInterval())
+    }
+  }, [dispatch, intervalState])
+
   const classes = useStyles()
   const typist = intervalState.typist
   const remainingTime = intervalState.remainingTime
@@ -68,6 +88,15 @@ function App() {
           <div className={classes.remainingTime}>
             {Math.floor(remainingTime / 60)} min {remainingTime % 60} sec
           </div>
+        </Box>
+        <Box display={'flex'} alignItems={'center'} className={classes.actions}>
+          <Button
+            variant={'contained'}
+            color={'primary'}
+            onClick={handleTimerButton}
+          >
+            {timerButtonLabel(intervalState)}
+          </Button>
         </Box>
         <Box display={'flex'} alignItems={'center'} className={classes.actions}>
           <Button variant={'outlined'} color={'primary'}>

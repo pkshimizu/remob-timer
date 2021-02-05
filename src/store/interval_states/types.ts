@@ -1,5 +1,19 @@
-interface IntervalStartAction {
-  type: 'IntervalStart'
+interface IntervalTimerStartAction {
+  type: 'IntervalTimerStart'
 }
 
-export type IntervalStateActionTypes = IntervalStartAction
+interface IntervalTimerStopAction {
+  type: 'IntervalTimerStop'
+}
+
+interface IntervalTimerCountDownAction {
+  type: 'IntervalTimerCountDown'
+  payload: {
+    msec: number
+  }
+}
+
+export type IntervalStateActionTypes =
+  | IntervalTimerStartAction
+  | IntervalTimerStopAction
+  | IntervalTimerCountDownAction
