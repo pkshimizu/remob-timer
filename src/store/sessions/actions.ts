@@ -19,7 +19,9 @@ export const createSession = (): ThunkAction<
       .then((res: any) => {
         dispatch({
           type: 'SessionCreate',
-          payload: new Session(res.id),
+          payload: {
+            session: new Session(res.id),
+          },
         })
       })
   }
