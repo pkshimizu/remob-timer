@@ -11,6 +11,11 @@ const sessionReducer = (state = initState, action: SessionActionTypes) => {
   switch (action.type) {
     case 'SessionCreate':
       return action.payload
+    case 'SessionIntervalUpdate':
+      return {
+        ...state,
+        interval: action.payload.interval,
+      }
   }
   return state
 }

@@ -3,7 +3,7 @@ import { KeyboardOutlined } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { IntervalState } from './models/interval_state'
-import { createSession } from './store/sessions/actions'
+import { createSession, fetchSession } from './store/sessions/actions'
 import { useEffect } from 'react'
 
 const useStyles = makeStyles({
@@ -41,12 +41,15 @@ function App() {
   const path = window.location.pathname
   const dispatch = useDispatch()
   useEffect(() => {
-    console.log(`path: ${path} id: ${id}`)
     if (path === '/') {
-      if (id !== '') {
+      if (id) {
         window.location.pathname = `/${id}`
       } else {
         dispatch(createSession())
+      }
+    } else {
+      if (!id) {
+        dispatch(fetchSession(path.substr(1)))
       }
     }
   }, [dispatch, path, id])
