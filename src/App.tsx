@@ -5,7 +5,11 @@ import { RootState } from './store'
 import { IntervalState, IntervalType } from './models/interval_state'
 import { createSession, fetchSession } from './store/sessions/actions'
 import { useCallback, useEffect, useRef } from 'react'
-import { startBreak, startMobbing } from './store/interval_states/actions'
+import {
+  nextInterval,
+  startBreak,
+  startMobbing,
+} from './store/interval_states/actions'
 import { useTimer } from 'use-timer'
 import { Status } from 'use-timer/lib/types'
 
@@ -80,13 +84,11 @@ function App() {
     }
   }, [dispatch, path, id])
   useEffect(() => {
-    if (
-      intervalType === IntervalType.waiting_for_mobbing ||
-      intervalType === IntervalType.waiting_for_break
-    ) {
+    if (status === 'STOPPED') {
       audioRef.current?.play()
+      dispatch(nextInterval())
     }
-  }, [intervalType])
+  }, [dispatch, status, intervalType])
   const handleTimerButton = useCallback(() => {
     if (status === 'RUNNING') {
       pause()

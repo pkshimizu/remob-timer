@@ -4,7 +4,11 @@ import { Session } from '../../models/session'
 const initState: Session = {
   id: undefined,
   members: [],
-  interval: undefined,
+  interval: {
+    time: 15,
+    shortBreakTime: 15,
+    longBreakTime: 15,
+  },
 }
 
 const sessionReducer = (state = initState, action: SessionActionTypes) => {
