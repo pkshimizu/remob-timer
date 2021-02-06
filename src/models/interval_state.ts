@@ -1,16 +1,12 @@
 export enum IntervalType {
+  waiting_for_mobbing,
   mobbing,
+  waiting_for_break,
   break,
 }
 
-export enum TimerState {
-  starting,
-  stopped,
-}
-
 export class IntervalState {
-  type?: IntervalType
+  type: IntervalType = IntervalType.waiting_for_mobbing
   remainingTime: number = 0
-  timerState: TimerState = TimerState.stopped
   typist?: string
 }

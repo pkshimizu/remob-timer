@@ -2,10 +2,12 @@ import { Box, Button, Container, makeStyles } from '@material-ui/core'
 import { KeyboardOutlined } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
-import { IntervalState, TimerState } from './models/interval_state'
+import { IntervalState, IntervalType } from './models/interval_state'
 import { createSession, fetchSession } from './store/sessions/actions'
-import { useCallback, useEffect } from 'react'
-import { startInterval, stopInterval } from './store/interval_states/actions'
+import { useCallback, useEffect, useRef } from 'react'
+import { startBreak, startMobbing } from './store/interval_states/actions'
+import { useTimer } from 'use-timer'
+import { Status } from 'use-timer/lib/types'
 
 const useStyles = makeStyles({
   root: {
@@ -32,11 +34,11 @@ const useStyles = makeStyles({
   },
 })
 
-const timerButtonLabel = (intervalState: IntervalState): string => {
-  if (intervalState.timerState === TimerState.starting) {
+const timerButtonLabel = (status: Status): string => {
+  if (status === 'RUNNING') {
     return 'Stop'
   }
-  if (intervalState.timerState === TimerState.stopped) {
+  if (status === 'STOPPED' || status === 'PAUSED') {
     return 'Start'
   }
   return 'Unknown'
@@ -49,8 +51,17 @@ function App() {
   const intervalState = useSelector<RootState, IntervalState>(
     (state) => state.intervalState,
   )
+  const intervalType = useSelector<RootState, IntervalType>(
+    (state) => state.intervalState.type,
+  )
+  const { time, start, pause, status } = useTimer({
+    initialTime: intervalState.remainingTime,
+    step: -1,
+    endTime: 0,
+  })
   const path = window.location.pathname
   const dispatch = useDispatch()
+  const audioRef = useRef<HTMLAudioElement>(null)
   useEffect(() => {
     if (path === '/') {
       if (id) {
@@ -64,20 +75,36 @@ function App() {
       }
     }
   }, [dispatch, path, id])
+  useEffect(() => {
+    if (
+      intervalType === IntervalType.waiting_for_mobbing ||
+      intervalType === IntervalType.waiting_for_break
+    ) {
+      audioRef.current?.play()
+    }
+  }, [intervalType])
   const handleTimerButton = useCallback(() => {
-    if (intervalState.timerState === TimerState.starting) {
-      dispatch(stopInterval())
+    if (status === 'RUNNING') {
+      pause()
     }
-    if (intervalState.timerState === TimerState.stopped) {
-      dispatch(startInterval())
+    if (status === 'PAUSED' || status === 'STOPPED') {
+      start()
     }
-  }, [dispatch, intervalState])
+    if (status === 'STOPPED') {
+      if (intervalType === IntervalType.waiting_for_mobbing) {
+        dispatch(startMobbing())
+      }
+      if (intervalType === IntervalType.waiting_for_break) {
+        dispatch(startBreak())
+      }
+    }
+  }, [dispatch, status, start, pause, intervalType])
 
   const classes = useStyles()
   const typist = intervalState.typist
-  const remainingTime = intervalState.remainingTime
   return (
     <Container className={classes.root}>
+      <audio src={'./assets/finish.mp3'} ref={audioRef} />
       <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
         <div className={classes.status}>1st Interval</div>
         <Box display={'flex'} alignItems={'center'}>
@@ -86,7 +113,7 @@ function App() {
         </Box>
         <Box display={'flex'} alignItems={'center'}>
           <div className={classes.remainingTime}>
-            {Math.floor(remainingTime / 60)} min {remainingTime % 60} sec
+            {Math.floor(time / 60)} min {time % 60} sec
           </div>
         </Box>
         <Box display={'flex'} alignItems={'center'} className={classes.actions}>
@@ -95,7 +122,7 @@ function App() {
             color={'primary'}
             onClick={handleTimerButton}
           >
-            {timerButtonLabel(intervalState)}
+            {timerButtonLabel(status)}
           </Button>
         </Box>
         <Box display={'flex'} alignItems={'center'} className={classes.actions}>

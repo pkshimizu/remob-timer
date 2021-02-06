@@ -1,10 +1,9 @@
-import { IntervalState, TimerState } from '../../models/interval_state'
+import { IntervalState, IntervalType } from '../../models/interval_state'
 import { IntervalStateActionTypes } from './types'
 
 const initState: IntervalState = {
-  remainingTime: 615,
-  type: undefined,
-  timerState: TimerState.stopped,
+  remainingTime: 15,
+  type: IntervalType.waiting_for_mobbing,
   typist: 'typist name',
 }
 
@@ -13,20 +12,16 @@ const intervalStateReducer = (
   action: IntervalStateActionTypes,
 ) => {
   switch (action.type) {
-    case 'IntervalTimerStart':
+    case 'IntervalTypeNext':
       return {
         ...state,
-        timerState: TimerState.starting,
+        type: action.payload.type,
+        remainingTime: action.payload.remainingTime,
       }
-    case 'IntervalTimerStop':
+    case 'IntervalTypeChange':
       return {
         ...state,
-        timerState: TimerState.stopped,
-      }
-    case 'IntervalTimerCountDown':
-      return {
-        ...state,
-        remainingTime: state.remainingTime - action.payload.msec / 1000,
+        type: action.payload.type,
       }
   }
   return state

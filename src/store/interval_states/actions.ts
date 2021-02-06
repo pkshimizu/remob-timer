@@ -2,33 +2,58 @@ import { Dispatch } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 import { RootState } from '../index'
 import { SessionActionTypes } from '../sessions/types'
-import { TimerState } from '../../models/interval_state'
+import { IntervalType } from '../../models/interval_state'
+import { Interval } from '../../models/interval'
 
-const sleep = (msec: number) =>
-  new Promise((resolve) => setTimeout(resolve, msec))
+const findNextType = (type: IntervalType): IntervalType => {
+  if (type === IntervalType.waiting_for_mobbing) {
+    return IntervalType.mobbing
+  }
+  if (type === IntervalType.mobbing) {
+    return IntervalType.waiting_for_break
+  }
+  if (type === IntervalType.waiting_for_break) {
+    return IntervalType.break
+  }
+  if (type === IntervalType.break) {
+    return IntervalType.waiting_for_mobbing
+  }
+  return type
+}
 
-export const startInterval = (): ThunkAction<
+const remainingTime = (type: IntervalType, interval: Interval): number => {
+  if (
+    type === IntervalType.waiting_for_mobbing ||
+    type === IntervalType.mobbing
+  ) {
+    return interval.time
+  }
+  if (type === IntervalType.waiting_for_break || type === IntervalType.break) {
+    return interval.shortBreakTime
+  }
+  return interval.time
+}
+
+export const nextInterval = (): ThunkAction<
   void,
   RootState,
   any,
   SessionActionTypes
 > => {
   return async (dispatch: Dispatch, getState) => {
+    const state = getState()
+    const nextType = findNextType(state.intervalState.type)
     await dispatch({
-      type: 'IntervalTimerStart',
+      type: 'IntervalTypeNextStart',
+      payload: {
+        type: nextType,
+        remainingTime: remainingTime(nextType, state.session.interval!),
+      },
     })
-    while (getState().intervalState.timerState === TimerState.starting) {
-      dispatch({
-        type: 'IntervalTimerCountDown',
-        payload: {
-          msec: 1000,
-        },
-      })
-      await sleep(1000)
-    }
   }
 }
-export const stopInterval = (): ThunkAction<
+
+export const startMobbing = (): ThunkAction<
   void,
   RootState,
   any,
@@ -36,7 +61,26 @@ export const stopInterval = (): ThunkAction<
 > => {
   return async (dispatch: Dispatch /*, getState*/) => {
     await dispatch({
-      type: 'IntervalTimerStop',
+      type: 'IntervalTypeChange',
+      payload: {
+        type: IntervalType.mobbing,
+      },
+    })
+  }
+}
+
+export const startBreak = (): ThunkAction<
+  void,
+  RootState,
+  any,
+  SessionActionTypes
+> => {
+  return async (dispatch: Dispatch /*, getState*/) => {
+    await dispatch({
+      type: 'IntervalTypeChange',
+      payload: {
+        type: IntervalType.break,
+      },
     })
   }
 }

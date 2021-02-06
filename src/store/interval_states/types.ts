@@ -1,9 +1,11 @@
-interface IntervalTimerStartAction {
-  type: 'IntervalTimerStart'
-}
+import { IntervalType } from '../../models/interval_state'
 
-interface IntervalTimerStopAction {
-  type: 'IntervalTimerStop'
+interface IntervalTypeNextAction {
+  type: 'IntervalTypeNext'
+  payload: {
+    type: IntervalType
+    remainingTime: number
+  }
 }
 
 interface IntervalTimerCountDownAction {
@@ -13,7 +15,14 @@ interface IntervalTimerCountDownAction {
   }
 }
 
+interface IntervalTypeChangeAction {
+  type: 'IntervalTypeChange'
+  payload: {
+    type: IntervalType
+  }
+}
+
 export type IntervalStateActionTypes =
-  | IntervalTimerStartAction
-  | IntervalTimerStopAction
+  | IntervalTypeNextAction
   | IntervalTimerCountDownAction
+  | IntervalTypeChangeAction
