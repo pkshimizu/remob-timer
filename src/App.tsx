@@ -110,7 +110,7 @@ function App() {
   const typist = intervalState.typist
   return (
     <Container className={classes.root}>
-      <audio src={'./assets/finish.mp3'} ref={audioRef} />
+      <audio src={'/assets/finish.mp3'} ref={audioRef} />
       <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
         <div className={classes.status}>1st Interval</div>
         <Box display={'flex'} alignItems={'center'}>
