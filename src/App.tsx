@@ -27,6 +27,10 @@ const useStyles = makeStyles({
     marginTop: 32,
     fontSize: 64,
   },
+  timerButton: {
+    fontSize: 32,
+    width: 256,
+  },
   actions: {
     '& > *': {
       margin: 8,
@@ -120,6 +124,7 @@ function App() {
           <Button
             variant={'contained'}
             color={'primary'}
+            className={classes.timerButton}
             onClick={handleTimerButton}
           >
             {timerButtonLabel(status)}
