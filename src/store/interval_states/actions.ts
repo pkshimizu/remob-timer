@@ -44,7 +44,7 @@ export const nextInterval = (): ThunkAction<
     const state = getState()
     const nextType = findNextType(state.intervalState.type)
     await dispatch({
-      type: 'IntervalTypeNextStart',
+      type: 'IntervalTypeNext',
       payload: {
         type: nextType,
         remainingTime: remainingTime(nextType, state.session.interval!),

@@ -1,17 +1,16 @@
-import { Box, Button, Container, makeStyles } from '@material-ui/core'
+import { Box, Container, makeStyles } from '@material-ui/core'
 import { KeyboardOutlined } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { IntervalState, IntervalType } from './models/interval_state'
 import { createSession, fetchSession } from './store/sessions/actions'
 import { useCallback, useEffect, useRef } from 'react'
-import {
-  nextInterval,
-  startBreak,
-  startMobbing,
-} from './store/interval_states/actions'
+import { nextInterval } from './store/interval_states/actions'
 import { useTimer } from 'use-timer'
 import { Status } from 'use-timer/lib/types'
+import BreakPage from './components/BreakPage'
+import ActionButton from './components/ActionButton'
+import SettingButton from './components/SettingButton'
 
 const useStyles = makeStyles({
   root: {
@@ -31,10 +30,6 @@ const useStyles = makeStyles({
     marginTop: 32,
     fontSize: 64,
   },
-  timerButton: {
-    fontSize: 32,
-    width: 256,
-  },
   actions: {
     '& > *': {
       margin: 8,
@@ -48,6 +43,22 @@ const timerButtonLabel = (status: Status): string => {
   }
   if (status === 'STOPPED' || status === 'PAUSED') {
     return 'Start'
+  }
+  return 'Unknown'
+}
+
+const intervalTypeLabel = (type: IntervalType): string => {
+  if (type === IntervalType.waiting_for_mobbing) {
+    return 'Waitting for mobbing'
+  }
+  if (type === IntervalType.mobbing) {
+    return 'Mobbing'
+  }
+  if (type === IntervalType.waiting_for_break) {
+    return 'Waitting for break'
+  }
+  if (type === IntervalType.break) {
+    return 'Break'
   }
   return 'Unknown'
 }
@@ -88,7 +99,7 @@ function App() {
       audioRef.current?.play()
       dispatch(nextInterval())
     }
-  }, [dispatch, status, intervalType])
+  }, [dispatch, status])
   const handleTimerButton = useCallback(() => {
     if (status === 'RUNNING') {
       pause()
@@ -96,52 +107,48 @@ function App() {
     if (status === 'PAUSED' || status === 'STOPPED') {
       start()
     }
-    if (status === 'STOPPED') {
-      if (intervalType === IntervalType.waiting_for_mobbing) {
-        dispatch(startMobbing())
-      }
-      if (intervalType === IntervalType.waiting_for_break) {
-        dispatch(startBreak())
-      }
-    }
-  }, [dispatch, status, start, pause, intervalType])
+  }, [status, start, pause])
 
   const classes = useStyles()
   const typist = intervalState.typist
   return (
-    <Container className={classes.root}>
+    <>
+      <BreakPage />
       <audio src={'/assets/finish.mp3'} ref={audioRef} />
-      <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-        <div className={classes.status}>1st Interval</div>
-        <Box display={'flex'} alignItems={'center'}>
-          <KeyboardOutlined className={classes.typistIcon} />
-          <div className={classes.typist}>{typist}</div>
-        </Box>
-        <Box display={'flex'} alignItems={'center'}>
-          <div className={classes.remainingTime}>
-            {Math.floor(time / 60)} min {time % 60} sec
+      <Container className={classes.root}>
+        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+          <div className={classes.status}>
+            {intervalTypeLabel(intervalType)}
           </div>
-        </Box>
-        <Box display={'flex'} alignItems={'center'} className={classes.actions}>
-          <Button
-            variant={'contained'}
-            color={'primary'}
-            className={classes.timerButton}
-            onClick={handleTimerButton}
+          <Box display={'flex'} alignItems={'center'}>
+            <KeyboardOutlined className={classes.typistIcon} />
+            <div className={classes.typist}>{typist}</div>
+          </Box>
+          <Box display={'flex'} alignItems={'center'}>
+            <div className={classes.remainingTime}>
+              {Math.floor(time / 60)} min {time % 60} sec
+            </div>
+          </Box>
+          <Box
+            display={'flex'}
+            alignItems={'center'}
+            className={classes.actions}
           >
-            {timerButtonLabel(status)}
-          </Button>
+            <ActionButton onClick={handleTimerButton}>
+              {timerButtonLabel(status)}
+            </ActionButton>
+          </Box>
+          <Box
+            display={'flex'}
+            alignItems={'center'}
+            className={classes.actions}
+          >
+            <SettingButton onClick={() => {}}>Member Settings</SettingButton>
+            <SettingButton onClick={() => {}}>Interval Settings</SettingButton>
+          </Box>
         </Box>
-        <Box display={'flex'} alignItems={'center'} className={classes.actions}>
-          <Button variant={'outlined'} color={'primary'}>
-            Member Settings
-          </Button>
-          <Button variant={'outlined'} color={'primary'}>
-            Interval Settings
-          </Button>
-        </Box>
-      </Box>
-    </Container>
+      </Container>
+    </>
   )
 }
 
