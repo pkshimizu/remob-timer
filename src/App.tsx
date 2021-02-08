@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { IntervalState, IntervalType } from './models/interval_state'
 import { createSession, fetchSession } from './store/sessions/actions'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect } from 'react'
 import { nextInterval } from './store/interval_states/actions'
 import { Status } from 'use-timer/lib/types'
 import BreakPage from './components/BreakPage'
@@ -81,7 +81,6 @@ function App() {
   })
   const path = window.location.pathname
   const dispatch = useDispatch()
-  const audioRef = useRef<HTMLAudioElement>(null)
   useEffect(() => {
     if (path === '/') {
       if (id) {
@@ -97,7 +96,8 @@ function App() {
   }, [dispatch, path, id])
   useEffect(() => {
     if (status === 'STOPPED') {
-      audioRef.current?.play()
+      const audio = new Audio('/assets/finish.mp3')
+      audio.play()
       dispatch(nextInterval())
     }
   }, [dispatch, status])
@@ -130,7 +130,6 @@ function App() {
   return (
     <>
       <BreakPage onStart={handleStartBreak} />
-      <audio src={'/assets/finish.mp3'} ref={audioRef} />
       <Container className={classes.root}>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
           <div className={classes.status}>
