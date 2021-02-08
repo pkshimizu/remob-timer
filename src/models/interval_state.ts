@@ -7,6 +7,5 @@ export enum IntervalType {
 
 export class IntervalState {
   type: IntervalType = IntervalType.waiting_for_mobbing
-  remainingTime: number = 0
   typist?: string
 }

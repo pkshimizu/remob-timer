@@ -3,7 +3,6 @@ import { ThunkAction } from 'redux-thunk'
 import { RootState } from '../index'
 import { SessionActionTypes } from '../sessions/types'
 import { IntervalType } from '../../models/interval_state'
-import { Interval } from '../../models/interval'
 
 const findNextType = (type: IntervalType): IntervalType => {
   if (type === IntervalType.waiting_for_mobbing) {
@@ -21,19 +20,6 @@ const findNextType = (type: IntervalType): IntervalType => {
   return type
 }
 
-const remainingTime = (type: IntervalType, interval: Interval): number => {
-  if (
-    type === IntervalType.waiting_for_mobbing ||
-    type === IntervalType.mobbing
-  ) {
-    return interval.time
-  }
-  if (type === IntervalType.waiting_for_break || type === IntervalType.break) {
-    return interval.shortBreakTime
-  }
-  return interval.time
-}
-
 export const nextInterval = (): ThunkAction<
   void,
   RootState,
@@ -44,10 +30,9 @@ export const nextInterval = (): ThunkAction<
     const state = getState()
     const nextType = findNextType(state.intervalState.type)
     await dispatch({
-      type: 'IntervalTypeNext',
+      type: 'IntervalTypeChange',
       payload: {
         type: nextType,
-        remainingTime: remainingTime(nextType, state.session.interval!),
       },
     })
   }
@@ -59,7 +44,7 @@ export const startMobbing = (): ThunkAction<
   any,
   SessionActionTypes
 > => {
-  return async (dispatch: Dispatch /*, getState*/) => {
+  return async (dispatch: Dispatch) => {
     await dispatch({
       type: 'IntervalTypeChange',
       payload: {
@@ -75,7 +60,7 @@ export const startBreak = (): ThunkAction<
   any,
   SessionActionTypes
 > => {
-  return async (dispatch: Dispatch /*, getState*/) => {
+  return async (dispatch: Dispatch) => {
     await dispatch({
       type: 'IntervalTypeChange',
       payload: {

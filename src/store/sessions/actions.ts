@@ -5,24 +5,30 @@ import { Session } from '../../models/session'
 import firebase from 'firebase/app'
 import { Interval } from '../../models/interval'
 
-export const createSession = (): ThunkAction<
-  void,
-  RootState,
-  any,
-  SessionActionTypes
-> => {
+export const createSession = (
+  interval: Interval,
+): ThunkAction<void, RootState, any, SessionActionTypes> => {
   return (dispatch, getState, { getFirestore }) => {
     const firestore = getFirestore()
     firestore
       .collection('sessions')
       .add({})
       .then((res: any) => {
-        dispatch({
-          type: 'SessionCreate',
-          payload: {
-            session: new Session(res.id),
-          },
-        })
+        firestore
+          .collection(`/sessions/${res.id}/interval`)
+          .add({
+            time: interval.time,
+            shortBreakTime: interval.shortBreakTime,
+            longBreakTime: interval.longBreakTime,
+          })
+          .then(() => {
+            dispatch({
+              type: 'SessionCreate',
+              payload: {
+                session: new Session(res.id, interval),
+              },
+            })
+          })
       })
   }
 }
@@ -40,6 +46,7 @@ export const fetchSession = (
         snapshot.docChanges().forEach(({ doc, type }) => {
           const data = doc.data()
           switch (type) {
+            case 'added':
             case 'modified':
               dispatch({
                 type: 'SessionIntervalUpdate',

@@ -6,11 +6,12 @@ import { IntervalState, IntervalType } from './models/interval_state'
 import { createSession, fetchSession } from './store/sessions/actions'
 import { useCallback, useEffect, useRef } from 'react'
 import { nextInterval } from './store/interval_states/actions'
-import { useTimer } from 'use-timer'
 import { Status } from 'use-timer/lib/types'
 import BreakPage from './components/BreakPage'
 import ActionButton from './components/ActionButton'
 import SettingButton from './components/SettingButton'
+import { Interval } from './models/interval'
+import { useTimer } from './store/timers/hook'
 
 const useStyles = makeStyles({
   root: {
@@ -67,16 +68,16 @@ function App() {
   const id = useSelector<RootState, string | undefined>(
     (state) => state.session.id,
   )
+  const interval = useSelector<RootState, Interval>(
+    (state) => state.session.interval,
+  )
   const intervalState = useSelector<RootState, IntervalState>(
     (state) => state.intervalState,
   )
-  const intervalType = useSelector<RootState, IntervalType>(
-    (state) => state.intervalState.type,
-  )
-  const { time, start, pause, status } = useTimer({
-    initialTime: intervalState.remainingTime,
-    step: -1,
+  const { time, start, pause, status, reset } = useTimer({
+    initialTime: interval.time,
     endTime: 0,
+    timerType: 'DECREMENTAL',
   })
   const path = window.location.pathname
   const dispatch = useDispatch()
@@ -86,7 +87,7 @@ function App() {
       if (id) {
         window.location.pathname = `/${id}`
       } else {
-        dispatch(createSession())
+        dispatch(createSession(new Interval()))
       }
     } else {
       if (!id) {
@@ -100,6 +101,14 @@ function App() {
       dispatch(nextInterval())
     }
   }, [dispatch, status])
+  useEffect(() => {
+    if (
+      intervalState.type === IntervalType.waiting_for_mobbing ||
+      intervalState.type === IntervalType.mobbing
+    ) {
+      reset(interval.time)
+    }
+  }, [reset, interval, intervalState])
   const handleTimerButton = useCallback(() => {
     if (status === 'RUNNING') {
       pause()
@@ -108,17 +117,24 @@ function App() {
       start()
     }
   }, [status, start, pause])
+  const handleStartBreak = useCallback(
+    (time: number) => {
+      reset(time)
+      start()
+    },
+    [start, reset],
+  )
 
   const classes = useStyles()
   const typist = intervalState.typist
   return (
     <>
-      <BreakPage />
+      <BreakPage onStart={handleStartBreak} />
       <audio src={'/assets/finish.mp3'} ref={audioRef} />
       <Container className={classes.root}>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
           <div className={classes.status}>
-            {intervalTypeLabel(intervalType)}
+            {intervalTypeLabel(intervalState.type)}
           </div>
           <Box display={'flex'} alignItems={'center'}>
             <KeyboardOutlined className={classes.typistIcon} />
