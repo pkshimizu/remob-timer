@@ -6,12 +6,12 @@ import { IntervalState, IntervalType } from './models/interval_state'
 import { createSession, fetchSession } from './store/sessions/actions'
 import { useCallback, useEffect } from 'react'
 import { nextInterval } from './store/interval_states/actions'
-import { Status } from 'use-timer/lib/types'
 import BreakPage from './components/BreakPage'
 import ActionButton from './components/ActionButton'
 import SettingButton from './components/SettingButton'
 import { Interval } from './models/interval'
 import { useTimer } from './store/timers/hook'
+import { Status } from './store/timers/types'
 
 const useStyles = makeStyles({
   root: {
