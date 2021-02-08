@@ -69,3 +69,18 @@ export const startBreak = (): ThunkAction<
     })
   }
 }
+export const skipBreak = (): ThunkAction<
+  void,
+  RootState,
+  any,
+  SessionActionTypes
+> => {
+  return async (dispatch: Dispatch) => {
+    await dispatch({
+      type: 'IntervalTypeChange',
+      payload: {
+        type: IntervalType.waiting_for_mobbing,
+      },
+    })
+  }
+}

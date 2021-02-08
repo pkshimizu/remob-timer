@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { IntervalType } from '../models/interval_state'
 import { useCallback } from 'react'
-import { startBreak } from '../store/interval_states/actions'
+import { skipBreak, startBreak } from '../store/interval_states/actions'
 import ActionButton from './ActionButton'
 import { Interval } from '../models/interval'
 
@@ -36,7 +36,9 @@ function BreakPage({ onStart }: BreakPageProps) {
     dispatch(startBreak())
     onStart(interval.longBreakTime)
   }, [dispatch, interval, onStart])
-  const onSelectSkipBreak = useCallback(() => {}, [])
+  const onSelectSkipBreak = useCallback(() => {
+    dispatch(skipBreak())
+  }, [dispatch])
   return (
     <Dialog open={intervalType === IntervalType.waiting_for_break} fullScreen>
       <Container>
