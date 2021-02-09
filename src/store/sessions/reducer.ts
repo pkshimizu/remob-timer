@@ -1,14 +1,11 @@
 import { SessionActionTypes } from './types'
 import { Session } from '../../models/session'
+import { Interval } from '../../models/interval'
 
 const initState: Session = {
   id: undefined,
   members: [],
-  interval: {
-    time: 15,
-    shortBreakTime: 15,
-    longBreakTime: 15,
-  },
+  interval: new Interval(),
 }
 
 const sessionReducer = (state = initState, action: SessionActionTypes) => {

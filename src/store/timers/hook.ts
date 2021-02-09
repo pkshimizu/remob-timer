@@ -45,8 +45,8 @@ export const useTimer = ({
 
   const reset = useCallback(
     (time?: number) => {
-      const newTime = time || initialTime
-      dispatch({ type: 'set', payload: { newTime } })
+      initialTime = time || initialTime
+      dispatch({ type: 'set', payload: { newTime: initialTime } })
     },
     [initialTime],
   )
