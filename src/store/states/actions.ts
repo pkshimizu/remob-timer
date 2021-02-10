@@ -93,12 +93,24 @@ export const skipBreak = (): ThunkAction<
 export const changeTimerState = (
   timerState: TimerState,
 ): ThunkAction<any, RootState, any, StatesActionTypes> => {
-  return (dispatch) => {
-    dispatch({
-      type: 'TimerStateUpdate',
-      payload: {
-        timerState: timerState,
-      },
-    })
+  return (dispatch, getState, { getFirestore }) => {
+    const firestore = getFirestore()
+    const id = getState().session.id
+    if (id) {
+      firestore
+        .collection('sessions')
+        .doc(id)
+        .update({
+          states: {
+            timerState: timerState,
+          },
+        })
+      dispatch({
+        type: 'TimerStateUpdate',
+        payload: {
+          timerState: timerState,
+        },
+      })
+    }
   }
 }

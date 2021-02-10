@@ -33,3 +33,21 @@ export const createSession = (): ThunkAction<
       })
   }
 }
+export const fetchSession = (
+  id: string,
+): ThunkAction<void, RootState, any, SessionActionTypes> => {
+  return (dispatch, getState, { getFirestore }) => {
+    const firestore = getFirestore()
+    firestore
+      .collection('sessions')
+      .doc(id)
+      .onSnapshot((doc: firebase.firestore.DocumentSnapshot) => {
+        dispatch({
+          type: 'SessionUpdate',
+          payload: {
+            id: doc.id,
+          },
+        })
+      })
+  }
+}

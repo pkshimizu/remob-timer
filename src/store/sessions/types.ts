@@ -5,4 +5,11 @@ interface SessionCreateAction {
   }
 }
 
-export type SessionActionTypes = SessionCreateAction
+interface SessionUpdateAction {
+  type: 'SessionUpdate'
+  payload: {
+    id: string
+  }
+}
+
+export type SessionActionTypes = SessionCreateAction | SessionUpdateAction

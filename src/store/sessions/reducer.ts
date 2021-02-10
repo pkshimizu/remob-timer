@@ -14,6 +14,10 @@ const sessionReducer = (state = initState, action: SessionActionTypes) => {
       return {
         id: action.payload.id,
       }
+    case 'SessionUpdate':
+      return {
+        id: action.payload.id,
+      }
   }
   return state
 }

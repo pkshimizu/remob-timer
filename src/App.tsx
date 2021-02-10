@@ -2,7 +2,7 @@ import { Box, Container, makeStyles } from '@material-ui/core'
 import { KeyboardOutlined } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
-import { createSession } from './store/sessions/actions'
+import { createSession, fetchSession } from './store/sessions/actions'
 import { useCallback, useEffect } from 'react'
 import BreakPage from './components/BreakPage'
 import ActionButton from './components/ActionButton'
@@ -71,17 +71,28 @@ function App() {
   )
   const settings = useSelector<RootState, Settings>((state) => state.settings)
   const states = useSelector<RootState, States>((state) => state.states)
+  const intervalPart = useSelector<RootState, IntervalPart>(
+    (state) => state.states.intervalPart,
+  )
+  const timerState = useSelector<RootState, TimerState>(
+    (state) => state.states.timerState,
+  )
+  const typist = useSelector<RootState, string | null>(
+    (state) => state.states.typist,
+  )
   const { time, start, pause, status, reset } = useTimer({
     initialTime: settings.workTime,
     endTime: 0,
     timerType: 'DECREMENTAL',
     onTimeOver: () => {
-      if (states.intervalPart === IntervalPart.work) {
+      const audio = new Audio('/assets/finish.mp3')
+      audio.play()
+      if (intervalPart === IntervalPart.work) {
         dispatch(startShortBreak())
       }
       if (
-        states.intervalPart === IntervalPart.shortBreak ||
-        states.intervalPart === IntervalPart.longBreak
+        intervalPart === IntervalPart.shortBreak ||
+        intervalPart === IntervalPart.longBreak
       ) {
         dispatch(startWork())
       }
@@ -99,6 +110,7 @@ function App() {
     } else {
       if (!id) {
         const sessionId = path.substr(1)
+        dispatch(fetchSession(sessionId))
         dispatch(fetchSettings(sessionId))
         dispatch(fetchMembers(sessionId))
         dispatch(fetchStates(sessionId))
@@ -107,8 +119,6 @@ function App() {
   }, [dispatch, path, id])
   useEffect(() => {
     if (status === 'STOPPED') {
-      const audio = new Audio('/assets/finish.mp3')
-      audio.play()
       dispatch(changeTimerState(TimerState.stopped))
     }
     if (status === 'RUNNING') {
@@ -119,10 +129,26 @@ function App() {
     }
   }, [status, dispatch])
   useEffect(() => {
-    if (states.intervalPart === IntervalPart.work) {
+    switch (timerState) {
+      case TimerState.stopped:
+        // TODO
+        return
+      case TimerState.running:
+        start()
+        return
+      case TimerState.paused:
+        pause()
+        return
+    }
+  }, [timerState, start, pause])
+  useEffect(() => {
+    if (
+      intervalPart === IntervalPart.work &&
+      timerState === TimerState.stopped
+    ) {
       reset(settings.workTime)
     }
-  }, [reset, settings, states])
+  }, [reset, settings, intervalPart, timerState])
   const handleTimerButton = useCallback(() => {
     if (status === 'RUNNING') {
       pause()
@@ -140,7 +166,6 @@ function App() {
   )
 
   const classes = useStyles()
-  const typist = states.typist
   return (
     <>
       <BreakPage onStart={handleStartBreak} />
