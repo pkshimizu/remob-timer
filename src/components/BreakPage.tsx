@@ -1,11 +1,15 @@
 import { Box, Container, Dialog, makeStyles } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
-import { IntervalType } from '../models/interval_state'
 import { useCallback } from 'react'
-import { skipBreak, startBreak } from '../store/interval_states/actions'
 import ActionButton from './ActionButton'
-import { Interval } from '../models/interval'
+import { IntervalPart, TimerState } from '../models/states'
+import { Settings } from '../models/settings'
+import {
+  skipBreak,
+  startLongBreak,
+  startShortBreak,
+} from '../store/states/actions'
 
 const useStyles = makeStyles({
   actions: {
@@ -21,26 +25,34 @@ export interface BreakPageProps {
 
 function BreakPage({ onStart }: BreakPageProps) {
   const classes = useStyles()
-  const intervalType = useSelector<RootState, IntervalType>(
-    (state) => state.intervalState.type,
+  const intervalPart = useSelector<RootState, IntervalPart>(
+    (state) => state.states.intervalPart,
   )
-  const interval = useSelector<RootState, Interval>(
-    (state) => state.session.interval,
+  const timerState = useSelector<RootState, TimerState>(
+    (state) => state.states.timerState,
   )
+  const settings = useSelector<RootState, Settings>((state) => state.settings)
   const dispatch = useDispatch()
   const onSelectShortBreak = useCallback(() => {
-    dispatch(startBreak())
-    onStart(interval.shortBreakTime)
-  }, [dispatch, interval, onStart])
+    dispatch(startShortBreak())
+    onStart(settings.shortBreakTime)
+  }, [dispatch, settings, onStart])
   const onSelectLongBreak = useCallback(() => {
-    dispatch(startBreak())
-    onStart(interval.longBreakTime)
-  }, [dispatch, interval, onStart])
+    dispatch(startLongBreak())
+    onStart(settings.longBreakTime)
+  }, [dispatch, settings, onStart])
   const onSelectSkipBreak = useCallback(() => {
     dispatch(skipBreak())
   }, [dispatch])
   return (
-    <Dialog open={intervalType === IntervalType.waiting_for_break} fullScreen>
+    <Dialog
+      open={
+        (intervalPart === IntervalPart.shortBreak ||
+          intervalPart === IntervalPart.longBreak) &&
+        timerState === TimerState.stopped
+      }
+      fullScreen
+    >
       <Container>
         <Box
           display={'flex'}

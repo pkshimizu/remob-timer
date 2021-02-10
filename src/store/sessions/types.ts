@@ -1,18 +1,8 @@
-import { Session } from '../../models/session'
-import { Interval } from '../../models/interval'
-
 interface SessionCreateAction {
   type: 'SessionCreate'
   payload: {
-    session: Session
+    id: string
   }
 }
 
-interface SessionIntervalUpdate {
-  type: 'SessionIntervalUpdate'
-  payload: {
-    interval: Interval
-  }
-}
-
-export type SessionActionTypes = SessionCreateAction | SessionIntervalUpdate
+export type SessionActionTypes = SessionCreateAction

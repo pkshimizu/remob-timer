@@ -3,11 +3,8 @@ export enum MemberType {
   Navigator,
 }
 
-export class Member {
-  type: MemberType = MemberType.Navigator
+export interface Member {
+  id: string
+  type: MemberType
   name: string
-
-  constructor(name: string) {
-    this.name = name
-  }
 }

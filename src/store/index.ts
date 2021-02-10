@@ -1,15 +1,19 @@
 import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
 import sessionReducer from './sessions/reducer'
-import intervalStateReducer from './interval_states/reducer'
 import thunk from 'redux-thunk'
 import { getFirebase, reactReduxFirebase } from 'react-redux-firebase'
 import { getFirestore, reduxFirestore } from 'redux-firestore'
 import firebase from '../config/firebase'
 import { createLogger } from 'redux-logger'
+import settingsReducer from './settings/reducer'
+import membersReducer from './members/reducer'
+import statesReducer from './states/reducer'
 
 const reducers = combineReducers({
   session: sessionReducer,
-  intervalState: intervalStateReducer,
+  settings: settingsReducer,
+  members: membersReducer,
+  states: statesReducer,
 })
 
 export type RootState = ReturnType<typeof reducers>

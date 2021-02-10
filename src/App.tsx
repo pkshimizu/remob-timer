@@ -2,16 +2,23 @@ import { Box, Container, makeStyles } from '@material-ui/core'
 import { KeyboardOutlined } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
-import { IntervalState, IntervalType } from './models/interval_state'
-import { createSession, fetchSession } from './store/sessions/actions'
+import { createSession } from './store/sessions/actions'
 import { useCallback, useEffect } from 'react'
-import { nextInterval } from './store/interval_states/actions'
 import BreakPage from './components/BreakPage'
 import ActionButton from './components/ActionButton'
 import SettingButton from './components/SettingButton'
-import { Interval } from './models/interval'
 import { useTimer } from './store/timers/hook'
 import { Status } from './store/timers/types'
+import { Settings } from './models/settings'
+import { fetchSettings } from './store/settings/actions'
+import { fetchMembers } from './store/members/actions'
+import {
+  changeTimerState,
+  fetchStates,
+  startShortBreak,
+  startWork,
+} from './store/states/actions'
+import { IntervalPart, States, TimerState } from './models/states'
 
 const useStyles = makeStyles({
   root: {
@@ -48,17 +55,11 @@ const timerButtonLabel = (status: Status): string => {
   return 'Unknown'
 }
 
-const intervalTypeLabel = (type: IntervalType): string => {
-  if (type === IntervalType.waiting_for_mobbing) {
-    return 'Waitting for mobbing'
+const intervalPartLabel = (type: IntervalPart): string => {
+  if (type === IntervalPart.work) {
+    return 'Work'
   }
-  if (type === IntervalType.mobbing) {
-    return 'Mobbing'
-  }
-  if (type === IntervalType.waiting_for_break) {
-    return 'Waitting for break'
-  }
-  if (type === IntervalType.break) {
+  if (type === IntervalPart.shortBreak || type === IntervalPart.longBreak) {
     return 'Break'
   }
   return 'Unknown'
@@ -68,16 +69,23 @@ function App() {
   const id = useSelector<RootState, string | undefined>(
     (state) => state.session.id,
   )
-  const interval = useSelector<RootState, Interval>(
-    (state) => state.session.interval,
-  )
-  const intervalState = useSelector<RootState, IntervalState>(
-    (state) => state.intervalState,
-  )
+  const settings = useSelector<RootState, Settings>((state) => state.settings)
+  const states = useSelector<RootState, States>((state) => state.states)
   const { time, start, pause, status, reset } = useTimer({
-    initialTime: interval.time,
+    initialTime: settings.workTime,
     endTime: 0,
     timerType: 'DECREMENTAL',
+    onTimeOver: () => {
+      if (states.intervalPart === IntervalPart.work) {
+        dispatch(startShortBreak())
+      }
+      if (
+        states.intervalPart === IntervalPart.shortBreak ||
+        states.intervalPart === IntervalPart.longBreak
+      ) {
+        dispatch(startWork())
+      }
+    },
   })
   const path = window.location.pathname
   const dispatch = useDispatch()
@@ -86,11 +94,14 @@ function App() {
       if (id) {
         window.location.pathname = `/${id}`
       } else {
-        dispatch(createSession(new Interval()))
+        dispatch(createSession())
       }
     } else {
       if (!id) {
-        dispatch(fetchSession(path.substr(1)))
+        const sessionId = path.substr(1)
+        dispatch(fetchSettings(sessionId))
+        dispatch(fetchMembers(sessionId))
+        dispatch(fetchStates(sessionId))
       }
     }
   }, [dispatch, path, id])
@@ -98,17 +109,20 @@ function App() {
     if (status === 'STOPPED') {
       const audio = new Audio('/assets/finish.mp3')
       audio.play()
-      dispatch(nextInterval())
+      dispatch(changeTimerState(TimerState.stopped))
     }
-  }, [dispatch, status])
+    if (status === 'RUNNING') {
+      dispatch(changeTimerState(TimerState.running))
+    }
+    if (status === 'PAUSED') {
+      dispatch(changeTimerState(TimerState.paused))
+    }
+  }, [status, dispatch])
   useEffect(() => {
-    if (
-      intervalState.type === IntervalType.waiting_for_mobbing ||
-      intervalState.type === IntervalType.mobbing
-    ) {
-      reset(interval.time)
+    if (states.intervalPart === IntervalPart.work) {
+      reset(settings.workTime)
     }
-  }, [reset, interval, intervalState])
+  }, [reset, settings, states])
   const handleTimerButton = useCallback(() => {
     if (status === 'RUNNING') {
       pause()
@@ -126,14 +140,14 @@ function App() {
   )
 
   const classes = useStyles()
-  const typist = intervalState.typist
+  const typist = states.typist
   return (
     <>
       <BreakPage onStart={handleStartBreak} />
       <Container className={classes.root}>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
           <div className={classes.status}>
-            {intervalTypeLabel(intervalState.type)}
+            {intervalPartLabel(states.intervalPart)}
           </div>
           <Box display={'flex'} alignItems={'center'}>
             <KeyboardOutlined className={classes.typistIcon} />
