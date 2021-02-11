@@ -15,7 +15,6 @@ export const createSession = (): ThunkAction<
       .collection('sessions')
       .add({
         settings: state.settings,
-        members: state.members.members,
         states: state.states,
       })
       .then((res: any) => {
