@@ -65,17 +65,24 @@ export const startWork = (): ThunkAction<
   any,
   StatesActionTypes
 > => {
-  return (dispatch, getState) => {
+  return (dispatch, getState, { getFirestore }) => {
     const members = getState().members.members
     const settings = getState().settings
     const states = getState().states
-    dispatch({
-      type: 'IntervalPartUpdate',
-      payload: {
-        intervalPart: IntervalPart.work,
-        typist: selectTypist(members, settings, states),
-      },
-    })
+    const firestore = getFirestore()
+    const id = getState().session.id
+    if (id) {
+      firestore
+        .collection('sessions')
+        .doc(id)
+        .update({
+          states: {
+            ...states,
+            intervalPart: IntervalPart.work,
+            typist: selectTypist(members, settings, states),
+          },
+        })
+    }
   }
 }
 
@@ -85,15 +92,21 @@ export const startShortBreak = (): ThunkAction<
   any,
   StatesActionTypes
 > => {
-  return (dispatch, getState) => {
-    const typist = getState().states.typist || ''
-    dispatch({
-      type: 'IntervalPartUpdate',
-      payload: {
-        intervalPart: IntervalPart.shortBreak,
-        typist: typist,
-      },
-    })
+  return (dispatch, getState, { getFirestore }) => {
+    const states = getState().states
+    const firestore = getFirestore()
+    const id = getState().session.id
+    if (id) {
+      firestore
+        .collection('sessions')
+        .doc(id)
+        .update({
+          states: {
+            ...states,
+            intervalPart: IntervalPart.shortBreak,
+          },
+        })
+    }
   }
 }
 
@@ -103,15 +116,21 @@ export const startLongBreak = (): ThunkAction<
   any,
   StatesActionTypes
 > => {
-  return (dispatch, getState) => {
-    const typist = getState().states.typist || ''
-    dispatch({
-      type: 'IntervalPartUpdate',
-      payload: {
-        intervalPart: IntervalPart.longBreak,
-        typist: typist,
-      },
-    })
+  return (dispatch, getState, { getFirestore }) => {
+    const states = getState().states
+    const firestore = getFirestore()
+    const id = getState().session.id
+    if (id) {
+      firestore
+        .collection('sessions')
+        .doc(id)
+        .update({
+          states: {
+            ...states,
+            intervalPart: IntervalPart.longBreak,
+          },
+        })
+    }
   }
 }
 
@@ -121,17 +140,24 @@ export const skipBreak = (): ThunkAction<
   any,
   StatesActionTypes
 > => {
-  return (dispatch, getState) => {
+  return (dispatch, getState, { getFirestore }) => {
     const members = getState().members.members
     const settings = getState().settings
     const states = getState().states
-    dispatch({
-      type: 'IntervalPartUpdate',
-      payload: {
-        intervalPart: IntervalPart.work,
-        typist: selectTypist(members, settings, states),
-      },
-    })
+    const firestore = getFirestore()
+    const id = getState().session.id
+    if (id) {
+      firestore
+        .collection('sessions')
+        .doc(id)
+        .update({
+          states: {
+            ...states,
+            intervalPart: IntervalPart.work,
+            typist: selectTypist(members, settings, states),
+          },
+        })
+    }
   }
 }
 
@@ -152,12 +178,6 @@ export const changeTimerState = (
             timerState: timerState,
           },
         })
-      dispatch({
-        type: 'TimerStateUpdate',
-        payload: {
-          timerState: timerState,
-        },
-      })
     }
   }
 }

@@ -137,7 +137,6 @@ function App() {
   useEffect(() => {
     switch (timerState) {
       case TimerState.stopped:
-        reset(0)
         return
       case TimerState.running:
         start()
