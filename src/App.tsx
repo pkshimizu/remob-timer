@@ -80,9 +80,12 @@ function App() {
   const timerState = useSelector<RootState, TimerState>(
     (state) => state.states.timerState,
   )
-  const typist = useSelector<RootState, string | null>(
-    (state) => state.states.typist,
-  )
+  const typist = useSelector<RootState, string | null>((state) => {
+    const id = state.states.typist
+    return (
+      state.members.members.find((member) => member.id === id)?.name || null
+    )
+  })
   const { time, start, pause, status, reset } = useTimer({
     initialTime: settings.workTime,
     endTime: 0,

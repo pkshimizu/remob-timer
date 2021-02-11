@@ -1,10 +1,11 @@
 import { SettingsActionTypes } from './types'
-import { Settings } from '../../models/settings'
+import { Settings, TypistSelectType } from '../../models/settings'
 
 const initState: Settings = {
   workTime: 25 * 60,
   shortBreakTime: 5 * 60,
   longBreakTime: 15 * 60,
+  typistSelectionType: TypistSelectType.rotation,
 }
 
 const settingsReducer = (state = initState, action: SettingsActionTypes) => {

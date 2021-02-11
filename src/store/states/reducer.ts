@@ -15,6 +15,7 @@ const statesReducer = (state = initState, action: StatesActionTypes) => {
       return {
         ...state,
         intervalPart: action.payload.intervalPart,
+        typist: action.payload.typist,
       }
     case 'TimerStateUpdate':
       return {

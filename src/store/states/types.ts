@@ -11,6 +11,7 @@ interface IntervalPartUpdateAction {
   type: 'IntervalPartUpdate'
   payload: {
     intervalPart: IntervalPart
+    typist: string
   }
 }
 
