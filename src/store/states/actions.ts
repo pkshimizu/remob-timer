@@ -96,12 +96,14 @@ export const changeTimerState = (
   return (dispatch, getState, { getFirestore }) => {
     const firestore = getFirestore()
     const id = getState().session.id
+    const states = getState().states
     if (id) {
       firestore
         .collection('sessions')
         .doc(id)
         .update({
           states: {
+            ...states,
             timerState: timerState,
           },
         })

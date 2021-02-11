@@ -1,10 +1,27 @@
 import { Member } from '../../models/member'
 
-interface MembersUpdateAction {
-  type: 'MembersUpdate'
+interface MemberAddAction {
+  type: 'MemberAdd'
   payload: {
-    members: Member[]
+    member: Member
   }
 }
 
-export type MembersActionTypes = MembersUpdateAction
+interface MemberUpdateAction {
+  type: 'MemberUpdate'
+  payload: {
+    member: Member
+  }
+}
+
+interface MemberDeleteAction {
+  type: 'MemberDelete'
+  payload: {
+    id: string
+  }
+}
+
+export type MembersActionTypes =
+  | MemberAddAction
+  | MemberUpdateAction
+  | MemberDeleteAction

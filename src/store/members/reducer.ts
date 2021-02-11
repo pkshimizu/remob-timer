@@ -11,10 +11,27 @@ const initState: MembersStore = {
 
 const membersReducer = (state = initState, action: MembersActionTypes) => {
   switch (action.type) {
-    case 'MembersUpdate':
+    case 'MemberAdd':
       return {
         ...state,
-        members: action.payload.members,
+        members: state.members.concat(action.payload.member),
+      }
+    case 'MemberUpdate':
+      return {
+        ...state,
+        members: state.members.map((member) => {
+          if (member.id === action.payload.member.id) {
+            return action.payload.member
+          }
+          return member
+        }),
+      }
+    case 'MemberDelete':
+      return {
+        ...state,
+        members: state.members.filter((member) => {
+          return member.id !== action.payload.id
+        }),
       }
   }
   return state

@@ -3,7 +3,7 @@ import { KeyboardOutlined } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { createSession, fetchSession } from './store/sessions/actions'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import BreakPage from './components/BreakPage'
 import ActionButton from './components/ActionButton'
 import SettingButton from './components/SettingButton'
@@ -19,6 +19,7 @@ import {
   startWork,
 } from './store/states/actions'
 import { IntervalPart, States, TimerState } from './models/states'
+import MemberSettingsPage from './components/MemberSettingsPage'
 
 const useStyles = makeStyles({
   root: {
@@ -56,16 +57,18 @@ const timerButtonLabel = (status: Status): string => {
 }
 
 const intervalPartLabel = (type: IntervalPart): string => {
-  if (type === IntervalPart.work) {
-    return 'Work'
-  }
-  if (type === IntervalPart.shortBreak || type === IntervalPart.longBreak) {
-    return 'Break'
+  switch (type) {
+    case IntervalPart.work:
+      return 'Work'
+    case IntervalPart.shortBreak:
+    case IntervalPart.longBreak:
+      return 'Break'
   }
   return 'Unknown'
 }
 
 function App() {
+  const [openMemberSettings, setOpenMemberSettings] = useState<boolean>(false)
   const id = useSelector<RootState, string | undefined>(
     (state) => state.session.id,
   )
@@ -131,7 +134,7 @@ function App() {
   useEffect(() => {
     switch (timerState) {
       case TimerState.stopped:
-        // TODO
+        reset(0)
         return
       case TimerState.running:
         start()
@@ -140,7 +143,7 @@ function App() {
         pause()
         return
     }
-  }, [timerState, start, pause])
+  }, [timerState, start, pause, reset])
   useEffect(() => {
     if (
       intervalPart === IntervalPart.work &&
@@ -168,6 +171,10 @@ function App() {
   const classes = useStyles()
   return (
     <>
+      <MemberSettingsPage
+        open={openMemberSettings}
+        onClose={() => setOpenMemberSettings(false)}
+      />
       <BreakPage onStart={handleStartBreak} />
       <Container className={classes.root}>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
@@ -197,7 +204,13 @@ function App() {
             alignItems={'center'}
             className={classes.actions}
           >
-            <SettingButton onClick={() => {}}>Member Settings</SettingButton>
+            <SettingButton
+              onClick={() => {
+                setOpenMemberSettings(!openMemberSettings)
+              }}
+            >
+              Member Settings
+            </SettingButton>
             <SettingButton onClick={() => {}}>Interval Settings</SettingButton>
           </Box>
         </Box>

@@ -19,17 +19,12 @@ export const createSession = (): ThunkAction<
         states: state.states,
       })
       .then((res: any) => {
-        firestore
-          .collection(`/sessions/${res.id}/interval`)
-          .add({})
-          .then(() => {
-            dispatch({
-              type: 'SessionCreate',
-              payload: {
-                id: res.id,
-              },
-            })
-          })
+        dispatch({
+          type: 'SessionCreate',
+          payload: {
+            id: res.id,
+          },
+        })
       })
   }
 }
