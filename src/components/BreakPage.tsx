@@ -1,4 +1,10 @@
-import { Box, Container, Dialog, makeStyles } from '@material-ui/core'
+import {
+  Box,
+  Container,
+  Dialog,
+  makeStyles,
+  Typography,
+} from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { useCallback } from 'react'
@@ -60,6 +66,7 @@ function BreakPage({ onStart }: BreakPageProps) {
           alignItems={'center'}
           className={classes.actions}
         >
+          <Typography variant={'h4'}>Break Select</Typography>
           <ActionButton onClick={onSelectShortBreak}>Short Break</ActionButton>
           <ActionButton onClick={onSelectLongBreak}>Long Break</ActionButton>
           <ActionButton onClick={onSelectSkipBreak}>Skip</ActionButton>
