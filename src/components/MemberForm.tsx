@@ -44,6 +44,7 @@ function MemberForm({ member, onSaveMember, onDeleteMember }: MemberFormProps) {
   return (
     <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
       <TextField
+        label={'Name'}
         value={name}
         onChange={(event) => {
           setName(event.target.value)
@@ -52,7 +53,7 @@ function MemberForm({ member, onSaveMember, onDeleteMember }: MemberFormProps) {
         className={classes.name}
       />
       <Select
-        placeholder={'Role'}
+        label={'Role'}
         value={role}
         onChange={(event) => {
           setRole(event.target.value as MemberRole)

@@ -10,7 +10,7 @@ import SettingButton from './components/SettingButton'
 import { useTimer } from './store/timers/hook'
 import { Status } from './store/timers/types'
 import { Settings } from './models/settings'
-import { fetchSettings } from './store/settings/actions'
+import { fetchSettings, updateSettings } from './store/settings/actions'
 import { fetchMembers } from './store/members/actions'
 import {
   changeTimerState,
@@ -20,6 +20,7 @@ import {
 } from './store/states/actions'
 import { IntervalPart, States, TimerState } from './models/states'
 import MemberSettingsPage from './components/MemberSettingsPage'
+import IntervalSettingsPage from './components/IntervalSettingsPage'
 
 const useStyles = makeStyles({
   root: {
@@ -69,6 +70,9 @@ const intervalPartLabel = (type: IntervalPart): string => {
 
 function App() {
   const [openMemberSettings, setOpenMemberSettings] = useState<boolean>(false)
+  const [openIntervalSettings, setOpenIntervalSettings] = useState<boolean>(
+    false,
+  )
   const id = useSelector<RootState, string | undefined>(
     (state) => state.session.id,
   )
@@ -177,6 +181,12 @@ function App() {
         open={openMemberSettings}
         onClose={() => setOpenMemberSettings(false)}
       />
+      <IntervalSettingsPage
+        open={openIntervalSettings}
+        settings={settings}
+        onSave={(settings) => dispatch(updateSettings(settings))}
+        onClose={() => setOpenIntervalSettings(false)}
+      />
       <BreakPage onStart={handleStartBreak} />
       <Container className={classes.root}>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
@@ -208,12 +218,18 @@ function App() {
           >
             <SettingButton
               onClick={() => {
-                setOpenMemberSettings(!openMemberSettings)
+                setOpenMemberSettings(true)
               }}
             >
               Member Settings
             </SettingButton>
-            <SettingButton onClick={() => {}}>Interval Settings</SettingButton>
+            <SettingButton
+              onClick={() => {
+                setOpenIntervalSettings(true)
+              }}
+            >
+              Interval Settings
+            </SettingButton>
           </Box>
         </Box>
       </Container>
