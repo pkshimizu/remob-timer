@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer } from 'react'
+import { useCallback, useEffect, useReducer, useState } from 'react'
 import { Status, TimerType } from './types'
 import reducer from './reducer'
 
@@ -36,6 +36,7 @@ export const useTimer = ({
     time: initialTime,
     timerType,
   })
+  const [initTime, setInitTime] = useState(initialTime)
 
   const { status, time } = state
 
@@ -45,21 +46,21 @@ export const useTimer = ({
 
   const reset = useCallback(
     (time?: number) => {
-      initialTime = time || initialTime
-      dispatch({ type: 'set', payload: { newTime: initialTime } })
+      setInitTime(time || initTime)
+      dispatch({ type: 'set', payload: { newTime: time || initTime } })
     },
-    [initialTime],
+    [dispatch, initTime, setInitTime],
   )
 
   const start = useCallback(() => {
-    dispatch({ type: 'start', payload: { initialTime } })
-  }, [initialTime])
+    dispatch({ type: 'start', payload: { initialTime: initTime } })
+  }, [initTime])
 
   useEffect(() => {
     if (autostart) {
-      dispatch({ type: 'start', payload: { initialTime } })
+      dispatch({ type: 'start', payload: { initialTime: initTime } })
     }
-  }, [autostart, initialTime])
+  }, [autostart, initTime])
 
   useEffect(() => {
     if (typeof onTimeUpdate === 'function') {

@@ -36,16 +36,12 @@ const selectTypist = (
   const navigators = members.filter(
     (member) => member.role === MemberRole.Navigator,
   )
-  console.log(navigators)
   if (navigators.length === 0) {
     return ''
   }
   if (settings.typistSelectionType === TypistSelectType.rotation) {
     let prev = ''
     for (let navigator of navigators) {
-      console.log(
-        `prev: ${prev}, navigator: ${navigator.id}, typist: ${states.typist}`,
-      )
       if (prev === states.typist) {
         return navigator.id
       }

@@ -17,7 +17,7 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
   )
   const dispatch = useDispatch()
   const handleAddMember = useCallback(
-    (name, role) => {
+    (id, name, role) => {
       dispatch(addMember(name, role))
     },
     [dispatch],
@@ -44,9 +44,7 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
             <MemberForm
               member={member}
               key={member.id}
-              onSaveMember={(name, role) => {
-                handleUpdateMember(member.id, name, role)
-              }}
+              onSaveMember={handleUpdateMember}
               onDeleteMember={() => handleDeleteMember(member.id)}
             />
           ))}

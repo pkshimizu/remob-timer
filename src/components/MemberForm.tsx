@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 
 interface MemberFormProps {
   member?: Member
-  onSaveMember: (name: string, role: MemberRole) => void
+  onSaveMember: (id: string | null, name: string, role: MemberRole) => void
   onDeleteMember?: () => void
 }
 
@@ -36,11 +36,14 @@ function MemberForm({ member, onSaveMember, onDeleteMember }: MemberFormProps) {
   const [role, setRole] = useState<MemberRole>(
     member?.role || MemberRole.Navigator,
   )
-  const handleChangeMember = useCallback((name, role) => {
-    if (member && name && role) {
-      onSaveMember(name, role)
-    }
-  }, [])
+  const handleChangeMember = useCallback(
+    (name, role) => {
+      if (member && name && role) {
+        onSaveMember(member.id, name, role)
+      }
+    },
+    [member, onSaveMember],
+  )
   return (
     <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
       <TextField
@@ -71,7 +74,7 @@ function MemberForm({ member, onSaveMember, onDeleteMember }: MemberFormProps) {
           <Add
             onClick={() => {
               if (name && role) {
-                onSaveMember(name, role)
+                onSaveMember(null, name, role)
                 setName('')
                 setRole(MemberRole.Navigator)
               }
