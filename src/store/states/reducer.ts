@@ -10,18 +10,13 @@ const initState: States = {
 const statesReducer = (state = initState, action: StatesActionTypes) => {
   switch (action.type) {
     case 'StatesUpdate':
+      console.log(
+        `part: ${state.intervalPart} -> ${action.payload.states.intervalPart}`,
+      )
+      console.log(
+        `time: ${state.timerState} -> ${action.payload.states.timerState}`,
+      )
       return action.payload.states
-    case 'IntervalPartUpdate':
-      return {
-        ...state,
-        intervalPart: action.payload.intervalPart,
-        typist: action.payload.typist,
-      }
-    case 'TimerStateUpdate':
-      return {
-        ...state,
-        timerState: action.payload.timerState,
-      }
   }
   return state
 }

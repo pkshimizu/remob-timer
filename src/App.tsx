@@ -90,7 +90,7 @@ function App() {
       state.members.members.find((member) => member.id === id)?.name || null
     )
   })
-  const { time, start, pause, status, reset } = useTimer({
+  const { time, start, pause, status, stop, reset } = useTimer({
     initialTime: settings.workTime,
     endTime: 0,
     timerType: 'DECREMENTAL',
@@ -131,6 +131,7 @@ function App() {
   useEffect(() => {
     switch (timerState) {
       case TimerState.stopped:
+        stop()
         return
       case TimerState.running:
         start()
@@ -139,13 +140,20 @@ function App() {
         pause()
         return
     }
-  }, [timerState, start, pause, reset])
+  }, [timerState, start, stop, pause, reset])
   useEffect(() => {
-    if (
-      intervalPart === IntervalPart.work &&
-      timerState === TimerState.stopped
-    ) {
-      reset(settings.workTime)
+    if (timerState === TimerState.stopped) {
+      switch (intervalPart) {
+        case IntervalPart.work:
+          reset(settings.workTime)
+          break
+        case IntervalPart.shortBreak:
+          reset(settings.shortBreakTime)
+          break
+        case IntervalPart.longBreak:
+          reset(settings.longBreakTime)
+          break
+      }
     }
   }, [reset, settings, intervalPart, timerState])
   const handleTimerButton = useCallback(() => {
@@ -156,13 +164,6 @@ function App() {
       dispatch(changeTimerState(TimerState.running))
     }
   }, [status, dispatch])
-  const handleStartBreak = useCallback(
-    (time: number) => {
-      reset(time)
-      dispatch(changeTimerState(TimerState.running))
-    },
-    [reset, dispatch],
-  )
 
   const classes = useStyles()
   return (
@@ -177,7 +178,7 @@ function App() {
         onSave={(settings) => dispatch(updateSettings(settings))}
         onClose={() => setOpenIntervalSettings(false)}
       />
-      <BreakPage onStart={handleStartBreak} />
+      <BreakPage />
       <Container className={classes.root}>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
           <div className={classes.status}>

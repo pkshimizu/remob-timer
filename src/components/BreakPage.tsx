@@ -12,6 +12,7 @@ import ActionButton from './ActionButton'
 import { IntervalPart, TimerState } from '../models/states'
 import { Settings } from '../models/settings'
 import {
+  changeTimerState,
   skipBreak,
   startLongBreak,
   startShortBreak,
@@ -25,11 +26,9 @@ const useStyles = makeStyles({
   },
 })
 
-export interface BreakPageProps {
-  onStart: (time: number) => void
-}
+export interface BreakPageProps {}
 
-function BreakPage({ onStart }: BreakPageProps) {
+function BreakPage({}: BreakPageProps) {
   const classes = useStyles()
   const intervalPart = useSelector<RootState, IntervalPart>(
     (state) => state.states.intervalPart,
@@ -41,12 +40,12 @@ function BreakPage({ onStart }: BreakPageProps) {
   const dispatch = useDispatch()
   const onSelectShortBreak = useCallback(() => {
     dispatch(startShortBreak())
-    onStart(settings.shortBreakTime)
-  }, [dispatch, settings, onStart])
+    dispatch(changeTimerState(TimerState.running))
+  }, [dispatch, settings])
   const onSelectLongBreak = useCallback(() => {
     dispatch(startLongBreak())
-    onStart(settings.longBreakTime)
-  }, [dispatch, settings, onStart])
+    dispatch(changeTimerState(TimerState.running))
+  }, [dispatch, settings])
   const onSelectSkipBreak = useCallback(() => {
     dispatch(skipBreak())
   }, [dispatch])

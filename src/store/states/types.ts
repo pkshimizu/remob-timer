@@ -1,4 +1,4 @@
-import { IntervalPart, States, TimerState } from '../../models/states'
+import { States } from '../../models/states'
 
 interface StatesUpdateAction {
   type: 'StatesUpdate'
@@ -6,23 +6,4 @@ interface StatesUpdateAction {
     states: States
   }
 }
-
-interface IntervalPartUpdateAction {
-  type: 'IntervalPartUpdate'
-  payload: {
-    intervalPart: IntervalPart
-    typist: string
-  }
-}
-
-interface TimerStateUpdateAction {
-  type: 'TimerStateUpdate'
-  payload: {
-    timerState: TimerState
-  }
-}
-
-export type StatesActionTypes =
-  | StatesUpdateAction
-  | IntervalPartUpdateAction
-  | TimerStateUpdateAction
+export type StatesActionTypes = StatesUpdateAction

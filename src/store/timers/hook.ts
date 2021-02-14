@@ -17,6 +17,7 @@ export type ReturnValue = {
   pause: () => void
   reset: (time?: number) => void
   start: () => void
+  stop: () => void
   status: Status
   time: number
 }
@@ -54,6 +55,10 @@ export const useTimer = ({
 
   const start = useCallback(() => {
     dispatch({ type: 'start', payload: { initialTime: initTime } })
+  }, [initTime])
+
+  const stop = useCallback(() => {
+    dispatch({ type: 'stop' })
   }, [initTime])
 
   useEffect(() => {
@@ -101,5 +106,5 @@ export const useTimer = ({
     }
   }, [status, step, timerType, interval, time])
 
-  return { pause, reset, start, status, time }
+  return { pause, reset, start, stop, status, time }
 }
