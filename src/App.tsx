@@ -106,6 +106,7 @@ function App() {
       ) {
         dispatch(startWork())
       }
+      dispatch(changeTimerState(TimerState.stopped))
     },
   })
   const path = window.location.pathname
@@ -128,17 +129,6 @@ function App() {
     }
   }, [dispatch, path, id])
   useEffect(() => {
-    if (status === 'STOPPED') {
-      dispatch(changeTimerState(TimerState.stopped))
-    }
-    if (status === 'RUNNING') {
-      dispatch(changeTimerState(TimerState.running))
-    }
-    if (status === 'PAUSED') {
-      dispatch(changeTimerState(TimerState.paused))
-    }
-  }, [status, dispatch])
-  useEffect(() => {
     switch (timerState) {
       case TimerState.stopped:
         return
@@ -160,18 +150,18 @@ function App() {
   }, [reset, settings, intervalPart, timerState])
   const handleTimerButton = useCallback(() => {
     if (status === 'RUNNING') {
-      pause()
+      dispatch(changeTimerState(TimerState.paused))
     }
     if (status === 'PAUSED' || status === 'STOPPED') {
-      start()
+      dispatch(changeTimerState(TimerState.running))
     }
-  }, [status, start, pause])
+  }, [status, dispatch])
   const handleStartBreak = useCallback(
     (time: number) => {
       reset(time)
-      start()
+      dispatch(changeTimerState(TimerState.running))
     },
-    [start, reset],
+    [reset, dispatch],
   )
 
   const classes = useStyles()
