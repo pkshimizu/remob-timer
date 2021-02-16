@@ -16,6 +16,7 @@ import { IntervalPart, States, TimerState } from './models/states'
 import MemberSettingsPage from './components/MemberSettingsPage'
 import IntervalSettingsPage from './components/IntervalSettingsPage'
 import PartSelectButtons from './components/PartSelectButtons'
+import TimeView from './components/TimeView'
 
 const useStyles = makeStyles({
   root: {
@@ -61,6 +62,18 @@ const intervalPartLabel = (type: IntervalPart): string => {
       return 'Break'
   }
   return 'Unknown'
+}
+
+const intervalPartTime = (intervalPart: IntervalPart, settings: Settings) => {
+  switch (intervalPart) {
+    case IntervalPart.work:
+      return settings.workTime
+    case IntervalPart.shortBreak:
+      return settings.shortBreakTime
+    case IntervalPart.longBreak:
+      return settings.longBreakTime
+  }
+  return 0
 }
 
 function App() {
@@ -123,23 +136,13 @@ function App() {
       }
     }
   }, [settings, states, reset])
+  const partTime = intervalPartTime(states.intervalPart, settings)
   useEffect(() => {
-    const resetTime = () => {
-      switch (states.intervalPart) {
-        case IntervalPart.work:
-          return settings.workTime
-        case IntervalPart.shortBreak:
-          return settings.shortBreakTime
-        case IntervalPart.longBreak:
-          return settings.longBreakTime
-      }
-      return 0
-    }
     switch (status) {
       case 'STOPPED':
         switch (states.timerState) {
           case TimerState.running:
-            start(resetTime())
+            start(partTime)
             break
         }
         break
@@ -159,7 +162,7 @@ function App() {
             stop()
             break
           case TimerState.running:
-            start(resetTime())
+            start(partTime)
             break
         }
     }
@@ -195,19 +198,18 @@ function App() {
             <KeyboardOutlined className={classes.typistIcon} />
             <div className={classes.typist}>{typist}</div>
           </Box>
-          <Box display={'flex'} alignItems={'center'}>
-            <div className={classes.remainingTime}>
-              {Math.floor(time / 60)} min {time % 60} sec
-            </div>
-          </Box>
           {states.timerState === TimerState.stopped ? (
             <PartSelectButtons />
           ) : (
             <Box
               display={'flex'}
+              flexDirection={'column'}
               alignItems={'center'}
               className={classes.actions}
             >
+              <Box display={'flex'} alignItems={'center'}>
+                <TimeView value={time} max={partTime} />
+              </Box>
               <ActionButton onClick={handleTimerButton}>
                 {timerButtonLabel(status)}
               </ActionButton>
