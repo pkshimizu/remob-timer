@@ -2,6 +2,8 @@ import { Member, MemberRole } from '../models/member'
 import {
   Box,
   Button,
+  FormControl,
+  InputLabel,
   makeStyles,
   MenuItem,
   Select,
@@ -55,18 +57,21 @@ function MemberForm({ member, onSaveMember, onDeleteMember }: MemberFormProps) {
         }}
         className={classes.name}
       />
-      <Select
-        label={'Role'}
-        value={role}
-        onChange={(event) => {
-          setRole(event.target.value as MemberRole)
-          handleChangeMember(name, event.target.value)
-        }}
-        className={classes.role}
-      >
-        <MenuItem value={MemberRole.Expert}>Expert</MenuItem>
-        <MenuItem value={MemberRole.Navigator}>Navigator</MenuItem>
-      </Select>
+      <FormControl>
+        <InputLabel id={'member-role'}>Role</InputLabel>
+        <Select
+          labelId={'member-role'}
+          value={role}
+          onChange={(event) => {
+            setRole(event.target.value as MemberRole)
+            handleChangeMember(name, event.target.value)
+          }}
+          className={classes.role}
+        >
+          <MenuItem value={MemberRole.Expert}>Expert</MenuItem>
+          <MenuItem value={MemberRole.Navigator}>Navigator</MenuItem>
+        </Select>
+      </FormControl>
       <Button className={classes.button}>
         {member ? (
           <Delete onClick={onDeleteMember} />

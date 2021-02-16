@@ -5,6 +5,7 @@ import firebase from 'firebase/app'
 import { IntervalPart, States, TimerState } from '../../models/states'
 import { Member, MemberRole } from '../../models/member'
 import { Settings, TypistSelectType } from '../../models/settings'
+import _ from 'lodash'
 
 export const fetchStates = (
   id: string,
@@ -16,7 +17,7 @@ export const fetchStates = (
       .doc(`${id}`)
       .onSnapshot((doc: firebase.firestore.DocumentSnapshot) => {
         const states = doc.get('states') as States
-        if (states) {
+        if (states && !_.isEqual(states, getState().states)) {
           dispatch({
             type: 'StatesUpdate',
             payload: {
@@ -75,6 +76,7 @@ export const startWork = (): ThunkAction<
           states: {
             ...states,
             intervalPart: IntervalPart.work,
+            timerState: TimerState.running,
             typist: selectTypist(members, settings, states),
           },
         })
@@ -100,6 +102,7 @@ export const startShortBreak = (): ThunkAction<
           states: {
             ...states,
             intervalPart: IntervalPart.shortBreak,
+            timerState: TimerState.running,
           },
         })
     }
@@ -124,33 +127,7 @@ export const startLongBreak = (): ThunkAction<
           states: {
             ...states,
             intervalPart: IntervalPart.longBreak,
-          },
-        })
-    }
-  }
-}
-
-export const skipBreak = (): ThunkAction<
-  any,
-  RootState,
-  any,
-  StatesActionTypes
-> => {
-  return (dispatch, getState, { getFirestore }) => {
-    const members = getState().members.members
-    const settings = getState().settings
-    const states = getState().states
-    const firestore = getFirestore()
-    const id = getState().session.id
-    if (id) {
-      firestore
-        .collection('sessions')
-        .doc(id)
-        .update({
-          states: {
-            ...states,
-            intervalPart: IntervalPart.work,
-            typist: selectTypist(members, settings, states),
+            timerState: TimerState.running,
           },
         })
     }

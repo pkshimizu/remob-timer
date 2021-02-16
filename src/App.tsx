@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { createSession, fetchSession } from './store/sessions/actions'
 import { useCallback, useEffect, useState } from 'react'
-import BreakPage from './components/BreakPage'
 import ActionButton from './components/ActionButton'
 import SettingButton from './components/SettingButton'
 import { useTimer } from './store/timers/hook'
@@ -12,15 +11,11 @@ import { Status } from './store/timers/types'
 import { Settings } from './models/settings'
 import { fetchSettings, updateSettings } from './store/settings/actions'
 import { fetchMembers } from './store/members/actions'
-import {
-  changeTimerState,
-  fetchStates,
-  startShortBreak,
-  startWork,
-} from './store/states/actions'
+import { changeTimerState, fetchStates } from './store/states/actions'
 import { IntervalPart, States, TimerState } from './models/states'
 import MemberSettingsPage from './components/MemberSettingsPage'
 import IntervalSettingsPage from './components/IntervalSettingsPage'
+import PartSelectButtons from './components/PartSelectButtons'
 
 const useStyles = makeStyles({
   root: {
@@ -78,12 +73,6 @@ function App() {
   )
   const settings = useSelector<RootState, Settings>((state) => state.settings)
   const states = useSelector<RootState, States>((state) => state.states)
-  const intervalPart = useSelector<RootState, IntervalPart>(
-    (state) => state.states.intervalPart,
-  )
-  const timerState = useSelector<RootState, TimerState>(
-    (state) => state.states.timerState,
-  )
   const typist = useSelector<RootState, string | null>((state) => {
     const id = state.states.typist
     return (
@@ -97,15 +86,6 @@ function App() {
     onTimeOver: () => {
       const audio = new Audio('/assets/finish.mp3')
       audio.play()
-      if (intervalPart === IntervalPart.work) {
-        dispatch(startShortBreak())
-      }
-      if (
-        intervalPart === IntervalPart.shortBreak ||
-        intervalPart === IntervalPart.longBreak
-      ) {
-        dispatch(startWork())
-      }
       dispatch(changeTimerState(TimerState.stopped))
     },
   })
@@ -129,21 +109,8 @@ function App() {
     }
   }, [dispatch, path, id])
   useEffect(() => {
-    switch (timerState) {
-      case TimerState.stopped:
-        stop()
-        return
-      case TimerState.running:
-        start()
-        return
-      case TimerState.paused:
-        pause()
-        return
-    }
-  }, [timerState, start, stop, pause, reset])
-  useEffect(() => {
-    if (timerState === TimerState.stopped) {
-      switch (intervalPart) {
+    if (states.timerState === TimerState.stopped) {
+      switch (states.intervalPart) {
         case IntervalPart.work:
           reset(settings.workTime)
           break
@@ -155,7 +122,48 @@ function App() {
           break
       }
     }
-  }, [reset, settings, intervalPart, timerState])
+  }, [settings, states, reset])
+  useEffect(() => {
+    const resetTime = () => {
+      switch (states.intervalPart) {
+        case IntervalPart.work:
+          return settings.workTime
+        case IntervalPart.shortBreak:
+          return settings.shortBreakTime
+        case IntervalPart.longBreak:
+          return settings.longBreakTime
+      }
+      return 0
+    }
+    switch (status) {
+      case 'STOPPED':
+        switch (states.timerState) {
+          case TimerState.running:
+            start(resetTime())
+            break
+        }
+        break
+      case 'RUNNING':
+        switch (states.timerState) {
+          case TimerState.stopped:
+            stop()
+            break
+          case TimerState.paused:
+            pause()
+            break
+        }
+        break
+      case 'PAUSED':
+        switch (states.timerState) {
+          case TimerState.stopped:
+            stop()
+            break
+          case TimerState.running:
+            start(resetTime())
+            break
+        }
+    }
+  }, [status, states, settings, start, stop, pause])
   const handleTimerButton = useCallback(() => {
     if (status === 'RUNNING') {
       dispatch(changeTimerState(TimerState.paused))
@@ -178,7 +186,6 @@ function App() {
         onSave={(settings) => dispatch(updateSettings(settings))}
         onClose={() => setOpenIntervalSettings(false)}
       />
-      <BreakPage />
       <Container className={classes.root}>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
           <div className={classes.status}>
@@ -193,15 +200,19 @@ function App() {
               {Math.floor(time / 60)} min {time % 60} sec
             </div>
           </Box>
-          <Box
-            display={'flex'}
-            alignItems={'center'}
-            className={classes.actions}
-          >
-            <ActionButton onClick={handleTimerButton}>
-              {timerButtonLabel(status)}
-            </ActionButton>
-          </Box>
+          {states.timerState === TimerState.stopped ? (
+            <PartSelectButtons />
+          ) : (
+            <Box
+              display={'flex'}
+              alignItems={'center'}
+              className={classes.actions}
+            >
+              <ActionButton onClick={handleTimerButton}>
+                {timerButtonLabel(status)}
+              </ActionButton>
+            </Box>
+          )}
           <Box
             display={'flex'}
             alignItems={'center'}

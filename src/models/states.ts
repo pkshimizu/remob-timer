@@ -13,5 +13,6 @@ export enum TimerState {
 export interface States {
   intervalPart: IntervalPart
   timerState: TimerState
+  time: number
   typist: string | null
 }

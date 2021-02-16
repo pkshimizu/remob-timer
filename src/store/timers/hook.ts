@@ -16,7 +16,7 @@ export type Config = {
 export type ReturnValue = {
   pause: () => void
   reset: (time?: number) => void
-  start: () => void
+  start: (time: number) => void
   stop: () => void
   status: Status
   time: number
@@ -53,13 +53,13 @@ export const useTimer = ({
     [dispatch, initTime, setInitTime],
   )
 
-  const start = useCallback(() => {
-    dispatch({ type: 'start', payload: { initialTime: initTime } })
-  }, [initTime])
+  const start = useCallback((time: number) => {
+    dispatch({ type: 'start', payload: { initialTime: time } })
+  }, [])
 
   const stop = useCallback(() => {
     dispatch({ type: 'stop' })
-  }, [initTime])
+  }, [])
 
   useEffect(() => {
     if (autostart) {
