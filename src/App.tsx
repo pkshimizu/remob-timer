@@ -99,12 +99,17 @@ function App() {
   })
   const { time, start, pause, status, stop, reset } = useTimer({
     initialTime: settings.workTime,
+    preTime: settings.workPreTime,
     endTime: 0,
     timerType: 'DECREMENTAL',
     onTimeOver: () => {
-      const audio = new Audio('/assets/finish.mp3')
+      const audio = new Audio('/assets/final.mp3')
       audio.play()
       dispatch(changeTimerState(TimerState.stopped))
+    },
+    onTimePreOver: () => {
+      const audio = new Audio('/assets/pre_final.mp3')
+      audio.play()
     },
   })
   const path = window.location.pathname
@@ -175,7 +180,7 @@ function App() {
             break
         }
     }
-  }, [status, states, settings, start, stop, pause, partTime])
+  }, [status, states, settings, start, stop, pause, reset, partTime])
   const handleTimerButton = useCallback(() => {
     if (status === 'RUNNING') {
       dispatch(changeTimerState(TimerState.paused))

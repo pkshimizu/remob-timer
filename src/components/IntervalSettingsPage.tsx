@@ -53,6 +53,16 @@ function IntervalSettingsPage({
             }}
           />
           <TimeField
+            label={'Work Pre Time'}
+            value={settings.workPreTime}
+            onChange={(time) => {
+              onSave({
+                ...settings,
+                workPreTime: time,
+              })
+            }}
+          />
+          <TimeField
             label={'Short Break Time'}
             value={settings.shortBreakTime}
             onChange={(time) => {

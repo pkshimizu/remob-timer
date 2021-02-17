@@ -6,8 +6,10 @@ export type Config = {
   autostart: boolean
   endTime: number | null
   initialTime: number
+  preTime: number
   interval: number
   onTimeOver?: () => void
+  onTimePreOver?: () => void
   onTimeUpdate?: (time: number) => void
   step: number
   timerType: TimerType
@@ -26,8 +28,10 @@ export const useTimer = ({
   autostart = false,
   endTime,
   initialTime = 0,
+  preTime = 0,
   interval = 1000,
   onTimeOver,
+  onTimePreOver,
   onTimeUpdate,
   step = 1,
   timerType = 'INCREMENTAL',
@@ -38,6 +42,7 @@ export const useTimer = ({
     timerType,
   })
   const [initTime, setInitTime] = useState(initialTime)
+  const [calledPre, setCalledPre] = useState(false)
 
   const { status, time } = state
 
@@ -76,6 +81,7 @@ export const useTimer = ({
   useEffect(() => {
     if (status !== 'STOPPED' && time === endTime) {
       dispatch({ type: 'stop' })
+      setCalledPre(false)
 
       if (typeof onTimeOver === 'function') {
         onTimeOver()
@@ -88,10 +94,19 @@ export const useTimer = ({
 
     if (status === 'RUNNING') {
       intervalId = setInterval(() => {
+        const newTime = timerType === 'DECREMENTAL' ? time - step : time + step
+        const callPreOver =
+          timerType === 'DECREMENTAL' ? newTime < preTime : newTime > preTime
+        if (callPreOver && !calledPre) {
+          if (typeof onTimePreOver === 'function') {
+            onTimePreOver()
+          }
+          setCalledPre(true)
+        }
         dispatch({
           type: 'set',
           payload: {
-            newTime: timerType === 'DECREMENTAL' ? time - step : time + step,
+            newTime: newTime,
           },
         })
       }, interval)
@@ -104,7 +119,7 @@ export const useTimer = ({
         clearInterval(intervalId)
       }
     }
-  }, [status, step, timerType, interval, time])
+  }, [status, step, timerType, interval, time, preTime, calledPre])
 
   return { pause, reset, start, stop, status, time }
 }
