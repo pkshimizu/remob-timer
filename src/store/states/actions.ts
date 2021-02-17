@@ -6,6 +6,7 @@ import { IntervalPart, States, TimerState } from '../../models/states'
 import { Member, MemberRole } from '../../models/member'
 import { Settings, TypistSelectType } from '../../models/settings'
 import _ from 'lodash'
+import dayjs from 'dayjs'
 
 export const fetchStates = (
   id: string,
@@ -76,6 +77,7 @@ export const startWork = (): ThunkAction<
           states: {
             ...states,
             intervalPart: IntervalPart.work,
+            intervalPartUpdatedAt: dayjs().format(),
             timerState: TimerState.running,
             typist: selectTypist(members, settings, states),
           },
@@ -102,6 +104,7 @@ export const startShortBreak = (): ThunkAction<
           states: {
             ...states,
             intervalPart: IntervalPart.shortBreak,
+            intervalPartUpdatedAt: dayjs().format(),
             timerState: TimerState.running,
           },
         })
@@ -127,6 +130,7 @@ export const startLongBreak = (): ThunkAction<
           states: {
             ...states,
             intervalPart: IntervalPart.longBreak,
+            intervalPartUpdatedAt: dayjs().format(),
             timerState: TimerState.running,
           },
         })

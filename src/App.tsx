@@ -17,6 +17,7 @@ import MemberSettingsPage from './components/MemberSettingsPage'
 import IntervalSettingsPage from './components/IntervalSettingsPage'
 import PartSelectButtons from './components/PartSelectButtons'
 import TimeView from './components/TimeView'
+import dayjs from 'dayjs'
 
 const useStyles = makeStyles({
   root: {
@@ -125,6 +126,7 @@ function App() {
       }
     }
   }, [dispatch, path, id])
+  useEffect(() => {}, [states, settings])
   useEffect(() => {
     if (states.timerState === TimerState.stopped) {
       switch (states.intervalPart) {
@@ -147,6 +149,9 @@ function App() {
         switch (states.timerState) {
           case TimerState.running:
             start(partTime)
+            reset(
+              partTime - dayjs().diff(states.intervalPartUpdatedAt, 'second'),
+            )
             break
         }
         break

@@ -1,10 +1,11 @@
 import { StatesActionTypes } from './types'
 import { IntervalPart, States, TimerState } from '../../models/states'
+import dayjs from 'dayjs'
 
 const initState: States = {
   intervalPart: IntervalPart.work,
   timerState: TimerState.stopped,
-  time: 0,
+  intervalPartUpdatedAt: dayjs().format(),
   typist: null,
 }
 
