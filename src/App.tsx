@@ -1,9 +1,9 @@
 import { Box, Container, makeStyles } from '@material-ui/core'
-import { KeyboardOutlined } from '@material-ui/icons'
+import { Error, KeyboardOutlined, Pause, PlayArrow } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { createSession, fetchSession } from './store/sessions/actions'
-import { useCallback, useEffect, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import ActionButton from './components/ActionButton'
 import SettingButton from './components/SettingButton'
 import { useTimer } from './store/timers/hook'
@@ -43,23 +43,27 @@ const useStyles = makeStyles({
   },
 })
 
-const timerButtonLabel = (status: Status): string => {
+const timerButtonIcon = (status: Status): ReactNode => {
   if (status === 'RUNNING') {
-    return 'Stop'
+    return <Pause />
   }
   if (status === 'STOPPED' || status === 'PAUSED') {
-    return 'Start'
+    return <PlayArrow />
   }
-  return 'Unknown'
+  return <Error />
 }
 
-const intervalPartLabel = (type: IntervalPart): string => {
-  switch (type) {
+const intervalPartLabel = (states: States): string => {
+  if (states.timerState === TimerState.stopped) {
+    return 'Select'
+  }
+  switch (states.intervalPart) {
     case IntervalPart.work:
       return 'Work'
     case IntervalPart.shortBreak:
-    case IntervalPart.longBreak:
       return 'Break'
+    case IntervalPart.longBreak:
+      return 'Long Break'
   }
   return 'Unknown'
 }
@@ -166,7 +170,7 @@ function App() {
             break
         }
     }
-  }, [status, states, settings, start, stop, pause])
+  }, [status, states, settings, start, stop, pause, partTime])
   const handleTimerButton = useCallback(() => {
     if (status === 'RUNNING') {
       dispatch(changeTimerState(TimerState.paused))
@@ -191,9 +195,7 @@ function App() {
       />
       <Container className={classes.root}>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-          <div className={classes.status}>
-            {intervalPartLabel(states.intervalPart)}
-          </div>
+          <div className={classes.status}>{intervalPartLabel(states)}</div>
           <Box display={'flex'} alignItems={'center'}>
             <KeyboardOutlined className={classes.typistIcon} />
             <div className={classes.typist}>{typist}</div>
@@ -210,9 +212,10 @@ function App() {
               <Box display={'flex'} alignItems={'center'}>
                 <TimeView value={time} max={partTime} />
               </Box>
-              <ActionButton onClick={handleTimerButton}>
-                {timerButtonLabel(status)}
-              </ActionButton>
+              <ActionButton
+                icon={timerButtonIcon(status)}
+                onClick={handleTimerButton}
+              />
             </Box>
           )}
           <Box
@@ -225,14 +228,14 @@ function App() {
                 setOpenMemberSettings(true)
               }}
             >
-              Member Settings
+              Members
             </SettingButton>
             <SettingButton
               onClick={() => {
                 setOpenIntervalSettings(true)
               }}
             >
-              Interval Settings
+              Settings
             </SettingButton>
           </Box>
         </Box>

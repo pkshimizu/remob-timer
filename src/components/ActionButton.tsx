@@ -1,19 +1,19 @@
-import { Button, makeStyles } from '@material-ui/core'
+import { Box, Button, makeStyles } from '@material-ui/core'
 import { ReactNode } from 'react'
 
 const useStyles = makeStyles({
   root: {
-    fontSize: 32,
-    width: 512,
+    fontSize: 16,
   },
 })
 
 interface ActionButtonProps {
-  children: ReactNode
+  icon: ReactNode
+  text?: string
   onClick: () => void
 }
 
-function ActionButton({ children, onClick }: ActionButtonProps) {
+function ActionButton({ icon, text, onClick }: ActionButtonProps) {
   const classes = useStyles()
   return (
     <Button
@@ -22,7 +22,10 @@ function ActionButton({ children, onClick }: ActionButtonProps) {
       color={'primary'}
       onClick={onClick}
     >
-      {children}
+      <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+        {icon}
+        {text}
+      </Box>
     </Button>
   )
 }

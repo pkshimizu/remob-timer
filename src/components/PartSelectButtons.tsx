@@ -7,12 +7,16 @@ import {
   startShortBreak,
   startWork,
 } from '../store/states/actions'
+import { DirectionsRun, FreeBreakfast, Wc } from '@material-ui/icons'
 
 const useStyles = makeStyles({
   actions: {
     '& > *': {
       margin: 8,
     },
+  },
+  button: {
+    fontSize: 32,
   },
 })
 
@@ -31,13 +35,25 @@ function PartSelectButtons() {
   return (
     <Box
       display={'flex'}
-      flexDirection={'column'}
+      flexDirection={'row'}
       alignItems={'center'}
       className={classes.actions}
     >
-      <ActionButton onClick={handleStartWork}>Work</ActionButton>
-      <ActionButton onClick={handleStartShortBreak}>Short Break</ActionButton>
-      <ActionButton onClick={handleStartLongBreak}>Long Break</ActionButton>
+      <ActionButton
+        icon={<DirectionsRun />}
+        text={'work'}
+        onClick={handleStartWork}
+      />
+      <ActionButton
+        icon={<Wc />}
+        text={'short break'}
+        onClick={handleStartShortBreak}
+      />
+      <ActionButton
+        icon={<FreeBreakfast />}
+        text={'long break'}
+        onClick={handleStartLongBreak}
+      />
     </Box>
   )
 }
