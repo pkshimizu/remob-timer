@@ -119,7 +119,16 @@ export const useTimer = ({
         clearInterval(intervalId)
       }
     }
-  }, [status, step, timerType, interval, time, preTime, calledPre])
+  }, [
+    status,
+    step,
+    timerType,
+    interval,
+    time,
+    preTime,
+    calledPre,
+    onTimePreOver,
+  ])
 
   return { pause, reset, start, stop, status, time }
 }
