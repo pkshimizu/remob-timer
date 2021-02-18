@@ -77,7 +77,8 @@ export const startWork = (): ThunkAction<
           states: {
             ...states,
             intervalPart: IntervalPart.work,
-            intervalPartUpdatedAt: dayjs().format(),
+            remainingTime: settings.workTime,
+            updatedAt: dayjs().format(),
             timerState: TimerState.running,
             typist: selectTypist(members, settings, states),
           },
@@ -94,6 +95,7 @@ export const startShortBreak = (): ThunkAction<
 > => {
   return (dispatch, getState, { getFirestore }) => {
     const states = getState().states
+    const settings = getState().settings
     const firestore = getFirestore()
     const id = getState().session.id
     if (id) {
@@ -104,7 +106,8 @@ export const startShortBreak = (): ThunkAction<
           states: {
             ...states,
             intervalPart: IntervalPart.shortBreak,
-            intervalPartUpdatedAt: dayjs().format(),
+            remainingTime: settings.shortBreakTime,
+            updatedAt: dayjs().format(),
             timerState: TimerState.running,
           },
         })
@@ -120,6 +123,7 @@ export const startLongBreak = (): ThunkAction<
 > => {
   return (dispatch, getState, { getFirestore }) => {
     const states = getState().states
+    const settings = getState().settings
     const firestore = getFirestore()
     const id = getState().session.id
     if (id) {
@@ -130,7 +134,8 @@ export const startLongBreak = (): ThunkAction<
           states: {
             ...states,
             intervalPart: IntervalPart.longBreak,
-            intervalPartUpdatedAt: dayjs().format(),
+            remainingTime: settings.longBreakTime,
+            updatedAt: dayjs().format(),
             timerState: TimerState.running,
           },
         })
@@ -140,6 +145,7 @@ export const startLongBreak = (): ThunkAction<
 
 export const changeTimerState = (
   timerState: TimerState,
+  remainingTime: number,
 ): ThunkAction<any, RootState, any, StatesActionTypes> => {
   return (dispatch, getState, { getFirestore }) => {
     const firestore = getFirestore()
@@ -153,6 +159,8 @@ export const changeTimerState = (
           states: {
             ...states,
             timerState: timerState,
+            remainingTime: remainingTime,
+            updatedAt: dayjs().format(),
           },
         })
     }

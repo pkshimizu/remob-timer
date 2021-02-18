@@ -5,7 +5,8 @@ import dayjs from 'dayjs'
 const initState: States = {
   intervalPart: IntervalPart.work,
   timerState: TimerState.stopped,
-  intervalPartUpdatedAt: dayjs().format(),
+  updatedAt: dayjs().format(),
+  remainingTime: 0,
   typist: null,
 }
 

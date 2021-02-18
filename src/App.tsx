@@ -105,7 +105,7 @@ function App() {
     onTimeOver: () => {
       const audio = new Audio('/assets/final.mp3')
       audio.play()
-      dispatch(changeTimerState(TimerState.stopped))
+      dispatch(changeTimerState(TimerState.stopped, 0))
     },
     onTimePreOver: () => {
       const audio = new Audio('/assets/pre_final.mp3')
@@ -155,8 +155,11 @@ function App() {
           case TimerState.running:
             start(partTime)
             reset(
-              partTime - dayjs().diff(states.intervalPartUpdatedAt, 'second'),
+              states.remainingTime - dayjs().diff(states.updatedAt, 'second'),
             )
+            break
+          case TimerState.paused:
+            reset(states.remainingTime)
             break
         }
         break
@@ -177,18 +180,21 @@ function App() {
             break
           case TimerState.running:
             start(partTime)
+            reset(
+              states.remainingTime - dayjs().diff(states.updatedAt, 'second'),
+            )
             break
         }
     }
   }, [status, states, settings, start, stop, pause, reset, partTime])
   const handleTimerButton = useCallback(() => {
     if (status === 'RUNNING') {
-      dispatch(changeTimerState(TimerState.paused))
+      dispatch(changeTimerState(TimerState.paused, time))
     }
     if (status === 'PAUSED' || status === 'STOPPED') {
-      dispatch(changeTimerState(TimerState.running))
+      dispatch(changeTimerState(TimerState.running, time))
     }
-  }, [status, dispatch])
+  }, [status, time, dispatch])
 
   const classes = useStyles()
   return (

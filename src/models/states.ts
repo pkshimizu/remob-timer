@@ -13,6 +13,7 @@ export enum TimerState {
 export interface States {
   intervalPart: IntervalPart
   timerState: TimerState
-  intervalPartUpdatedAt: string
   typist: string | null
+  remainingTime: number
+  updatedAt: string
 }
