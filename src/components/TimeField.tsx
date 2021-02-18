@@ -1,10 +1,16 @@
-import { InputAdornment, makeStyles, TextField } from '@material-ui/core'
+import {
+  Box,
+  InputAdornment,
+  makeStyles,
+  TextField,
+  Typography,
+} from '@material-ui/core'
 import { useState } from 'react'
 import { Timer } from '@material-ui/icons'
 
 const useStyles = makeStyles({
   time: {
-    width: 160,
+    width: 80,
   },
 })
 
@@ -16,24 +22,43 @@ export interface TimeFieldProps {
 
 function TimeField({ value, label, onChange }: TimeFieldProps) {
   const classes = useStyles()
-  const [time, setTime] = useState(value)
+  const [min, setMin] = useState(Math.floor(value / 60))
+  const [sec, setSec] = useState(value % 60)
   return (
-    <TextField
-      label={label}
-      value={time / 60}
-      onChange={(event) => {
-        const value = Math.max(parseInt(event.target.value), 0)
-        const time = value * 60
-        onChange(time)
-        setTime(time)
-      }}
-      type={'number'}
-      InputProps={{
-        startAdornment: <Timer />,
-        endAdornment: <InputAdornment position={'end'}>min</InputAdornment>,
-      }}
-      className={classes.time}
-    />
+    <Box display={'flex'} flexDirection={'column'}>
+      <Typography variant={'caption'}>{label}</Typography>
+      <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+        <Timer />
+        <TextField
+          value={min}
+          onChange={(event) => {
+            const min = Math.max(parseInt(event.target.value), 0)
+            const time = min * 60 + sec
+            onChange(time)
+            setMin(min)
+          }}
+          type={'number'}
+          InputProps={{
+            endAdornment: <InputAdornment position={'end'}>min</InputAdornment>,
+          }}
+          className={classes.time}
+        />
+        <TextField
+          value={sec}
+          onChange={(event) => {
+            const sec = Math.max(parseInt(event.target.value), 0)
+            const time = min * 60 + sec
+            onChange(time)
+            setSec(sec)
+          }}
+          type={'number'}
+          InputProps={{
+            endAdornment: <InputAdornment position={'end'}>sec</InputAdornment>,
+          }}
+          className={classes.time}
+        />
+      </Box>
+    </Box>
   )
 }
 
