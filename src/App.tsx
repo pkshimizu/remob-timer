@@ -108,8 +108,10 @@ function App() {
       dispatch(changeTimerState(TimerState.stopped, 0))
     },
     onTimePreOver: () => {
-      const audio = new Audio('/assets/pre_final.mp3')
-      audio.play()
+      if (states.intervalPart === IntervalPart.work) {
+        const audio = new Audio('/assets/pre_final.mp3')
+        audio.play()
+      }
     },
   })
   const path = window.location.pathname
