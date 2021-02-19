@@ -1,16 +1,11 @@
-import {
-  Box,
-  InputAdornment,
-  makeStyles,
-  TextField,
-  Typography,
-} from '@material-ui/core'
+import { Box, makeStyles, Typography } from '@material-ui/core'
 import { useState } from 'react'
 import { Timer } from '@material-ui/icons'
+import NumberField from './NumberField'
 
 const useStyles = makeStyles({
   time: {
-    width: 80,
+    width: 64,
   },
 })
 
@@ -29,34 +24,30 @@ function TimeField({ value, label, onChange }: TimeFieldProps) {
       <Typography variant={'caption'}>{label}</Typography>
       <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
         <Timer />
-        <TextField
-          value={min}
-          onChange={(event) => {
-            const min = Math.max(parseInt(event.target.value), 0)
-            const time = min * 60 + sec
-            onChange(time)
-            setMin(min)
-          }}
-          type={'number'}
-          InputProps={{
-            endAdornment: <InputAdornment position={'end'}>min</InputAdornment>,
-          }}
-          className={classes.time}
-        />
-        <TextField
-          value={sec}
-          onChange={(event) => {
-            const sec = Math.max(parseInt(event.target.value), 0)
-            const time = min * 60 + sec
-            onChange(time)
-            setSec(sec)
-          }}
-          type={'number'}
-          InputProps={{
-            endAdornment: <InputAdornment position={'end'}>sec</InputAdornment>,
-          }}
-          className={classes.time}
-        />
+        <Box className={classes.time}>
+          <NumberField
+            num={min}
+            min={0}
+            max={99}
+            suffix={'min'}
+            onChange={(value) => {
+              onChange(value * 60 + sec)
+              setMin(value)
+            }}
+          />
+        </Box>
+        <Box className={classes.time}>
+          <NumberField
+            num={sec}
+            min={0}
+            max={59}
+            suffix={'sec'}
+            onChange={(value) => {
+              onChange(min * 60 + value)
+              setSec(value)
+            }}
+          />
+        </Box>
       </Box>
     </Box>
   )
