@@ -6,15 +6,29 @@ import reportWebVitals from './reportWebVitals'
 import store from './store'
 import { Provider } from 'react-redux'
 import firebase from './config/firebase'
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
 if (process.env.NODE_ENV === 'production') {
   firebase.analytics()
 }
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#5577FF',
+    },
+    secondary: {
+      main: '#D044DD',
+    },
+  },
+})
+
 ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
-      <App />
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
     </React.StrictMode>
     ,
   </Provider>,
