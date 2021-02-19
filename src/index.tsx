@@ -5,6 +5,11 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import store from './store'
 import { Provider } from 'react-redux'
+import firebase from './config/firebase'
+
+if (process.env.NODE_ENV === 'production') {
+  firebase.analytics()
+}
 
 ReactDOM.render(
   <Provider store={store}>

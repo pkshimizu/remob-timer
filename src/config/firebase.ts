@@ -1,14 +1,15 @@
 import firebase from 'firebase/app'
+import 'firebase/analytics'
 import 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDTip5ObsIxWfOrPkTu3qsr-YmTNE6af_o',
-  authDomain: 'remob-timer.firebaseapp.com',
-  projectId: 'remob-timer',
-  storageBucket: 'remob-timer.appspot.com',
-  messagingSenderId: '637589874808',
-  appId: '1:637589874808:web:1a90da86ba3dfc577fa58d',
-  measurementId: 'G-FYBTQRW2JX',
+  apiKey: process.env.REACT_APP_APP_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGEBUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 }
 
 // Initialize Firebase
