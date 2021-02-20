@@ -24,6 +24,7 @@ export const fetchMembers = (
                     id: doc.id,
                     name: doc.data().name,
                     role: doc.data().role,
+                    order: doc.data().order,
                   },
                 },
               })
@@ -36,6 +37,7 @@ export const fetchMembers = (
                     id: doc.id,
                     name: doc.data().name,
                     role: doc.data().role,
+                    order: doc.data().order,
                   },
                 },
               })
@@ -59,10 +61,12 @@ export const addMember = (
 ): ThunkAction<any, RootState, any, MembersActionTypes> => {
   return (dispatch, getState, { getFirestore }) => {
     const sessionId = getState().session.id
+    const order = getState().members.members.length
     const firestore = getFirestore()
     firestore.collection('sessions').doc(sessionId).collection('members').add({
       name: name,
       role: role,
+      order: order,
     })
   }
 }
@@ -71,6 +75,7 @@ export const updateMember = (
   id: string,
   name: string,
   role: MemberRole,
+  order: number,
 ): ThunkAction<any, RootState, any, MembersActionTypes> => {
   return (dispatch, getState, { getFirestore }) => {
     const sessionId = getState().session.id

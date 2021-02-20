@@ -23,8 +23,8 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
     [dispatch],
   )
   const handleUpdateMember = useCallback(
-    (id, name, role) => {
-      dispatch(updateMember(id, name, role))
+    (id, name, role, order) => {
+      dispatch(updateMember(id, name, role, order))
     },
     [dispatch],
   )

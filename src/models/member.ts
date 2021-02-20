@@ -7,4 +7,5 @@ export interface Member {
   id: string
   role: MemberRole
   name: string
+  order: number
 }

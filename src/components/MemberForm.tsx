@@ -9,7 +9,7 @@ import {
   Select,
   TextField,
 } from '@material-ui/core'
-import { Add, Delete } from '@material-ui/icons'
+import { Add, ExitToApp } from '@material-ui/icons'
 import { useCallback, useState } from 'react'
 
 const useStyles = makeStyles({
@@ -28,7 +28,12 @@ const useStyles = makeStyles({
 
 interface MemberFormProps {
   member?: Member
-  onSaveMember: (id: string | null, name: string, role: MemberRole) => void
+  onSaveMember: (
+    id: string | null,
+    name: string,
+    role: MemberRole,
+    order?: number,
+  ) => void
   onDeleteMember?: () => void
 }
 
@@ -41,7 +46,7 @@ function MemberForm({ member, onSaveMember, onDeleteMember }: MemberFormProps) {
   const handleChangeMember = useCallback(
     (name, role) => {
       if (member && name && role) {
-        onSaveMember(member.id, name, role)
+        onSaveMember(member.id, name, role, member.order)
       }
     },
     [member, onSaveMember],
@@ -74,7 +79,7 @@ function MemberForm({ member, onSaveMember, onDeleteMember }: MemberFormProps) {
       </FormControl>
       <Button className={classes.button}>
         {member ? (
-          <Delete onClick={onDeleteMember} />
+          <ExitToApp onClick={onDeleteMember} />
         ) : (
           <Add
             onClick={() => {
