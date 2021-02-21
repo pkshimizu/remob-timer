@@ -60,6 +60,13 @@ function MemberForm({ member, onSaveMember, onDeleteMember }: MemberFormProps) {
           setName(event.target.value)
           handleChangeMember(event.target.value, role)
         }}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            onSaveMember(null, name, role)
+            setName('')
+            setRole(MemberRole.Navigator)
+          }
+        }}
         className={classes.name}
       />
       <FormControl>
