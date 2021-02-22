@@ -3,7 +3,13 @@ import { Error, KeyboardOutlined, Pause, PlayArrow } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { createSession, fetchSession } from './store/sessions/actions'
-import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import ActionButton from './components/ActionButton'
 import SettingButton from './components/SettingButton'
 import { useTimer } from './store/timers/hook'
@@ -97,8 +103,8 @@ function App() {
       state.members.members.find((member) => member.id === id)?.name || null
     )
   })
-  const finishAudio = new Audio('/assets/final.mp3')
-  const preFinishAudio = new Audio('/assets/pre_final.mp3')
+  const finishAudio = useMemo(() => new Audio('/assets/final.mp3'), [])
+  const preFinishAudio = useMemo(() => new Audio('/assets/pre_final.mp3'), [])
   const { time, start, pause, status, stop, reset } = useTimer({
     initialTime: settings.workTime,
     preTime: settings.workPreTime,
@@ -189,7 +195,17 @@ function App() {
             break
         }
     }
-  }, [status, states, settings, start, stop, pause, reset, partTime])
+  }, [
+    status,
+    states,
+    settings,
+    start,
+    stop,
+    pause,
+    reset,
+    partTime,
+    finishAudio,
+  ])
   const handleTimerButton = useCallback(() => {
     if (status === 'RUNNING') {
       dispatch(changeTimerState(TimerState.paused, time))
