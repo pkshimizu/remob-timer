@@ -97,20 +97,20 @@ function App() {
       state.members.members.find((member) => member.id === id)?.name || null
     )
   })
+  const finishAudio = new Audio('/assets/final.mp3')
+  const preFinishAudio = new Audio('/assets/pre_final.mp3')
   const { time, start, pause, status, stop, reset } = useTimer({
     initialTime: settings.workTime,
     preTime: settings.workPreTime,
     endTime: 0,
     timerType: 'DECREMENTAL',
     onTimeOver: () => {
-      const audio = new Audio('/assets/final.mp3')
-      audio.play()
+      finishAudio.play()
       dispatch(changeTimerState(TimerState.stopped, 0))
     },
     onTimePreOver: () => {
       if (states.intervalPart === IntervalPart.work) {
-        const audio = new Audio('/assets/pre_final.mp3')
-        audio.play()
+        preFinishAudio.play()
       }
     },
   })
@@ -168,6 +168,7 @@ function App() {
       case 'RUNNING':
         switch (states.timerState) {
           case TimerState.stopped:
+            finishAudio.play()
             stop()
             break
           case TimerState.paused:

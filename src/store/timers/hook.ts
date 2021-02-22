@@ -64,6 +64,7 @@ export const useTimer = ({
 
   const stop = useCallback(() => {
     dispatch({ type: 'stop' })
+    setCalledPre(false)
   }, [])
 
   useEffect(() => {
@@ -96,7 +97,7 @@ export const useTimer = ({
       intervalId = setInterval(() => {
         const newTime = timerType === 'DECREMENTAL' ? time - step : time + step
         const callPreOver =
-          timerType === 'DECREMENTAL' ? newTime < preTime : newTime > preTime
+          timerType === 'DECREMENTAL' ? newTime <= preTime : newTime >= preTime
         if (callPreOver && !calledPre) {
           if (typeof onTimePreOver === 'function') {
             onTimePreOver()

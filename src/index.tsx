@@ -30,7 +30,6 @@ ReactDOM.render(
         <App />
       </ThemeProvider>
     </React.StrictMode>
-    ,
   </Provider>,
   document.getElementById('root'),
 )
