@@ -88,6 +88,7 @@ export const updateMember = (
       .update({
         name: name,
         role: role,
+        order: order,
       })
   }
 }

@@ -2,6 +2,7 @@ import { Member, MemberRole } from '../models/member'
 import {
   Box,
   Button,
+  ButtonGroup,
   FormControl,
   InputLabel,
   makeStyles,
@@ -9,7 +10,7 @@ import {
   Select,
   TextField,
 } from '@material-ui/core'
-import { Add, ExitToApp } from '@material-ui/icons'
+import { Add, ArrowDropDown, ArrowDropUp, Close } from '@material-ui/icons'
 import { useCallback, useState } from 'react'
 
 const useStyles = makeStyles({
@@ -28,6 +29,9 @@ const useStyles = makeStyles({
 
 interface MemberFormProps {
   member?: Member
+  first?: boolean
+  last?: boolean
+  hiddenOrderButtons?: boolean
   onSaveMember: (
     id: string | null,
     name: string,
@@ -35,9 +39,20 @@ interface MemberFormProps {
     order?: number,
   ) => void
   onDeleteMember?: () => void
+  onUp?: (id: string) => void
+  onDown?: (id: string) => void
 }
 
-function MemberForm({ member, onSaveMember, onDeleteMember }: MemberFormProps) {
+function MemberForm({
+  member,
+  first,
+  last,
+  hiddenOrderButtons = false,
+  onSaveMember,
+  onDeleteMember,
+  onUp,
+  onDown,
+}: MemberFormProps) {
   const classes = useStyles()
   const [name, setName] = useState<string>(member?.name || '')
   const [role, setRole] = useState<MemberRole>(
@@ -84,9 +99,39 @@ function MemberForm({ member, onSaveMember, onDeleteMember }: MemberFormProps) {
           <MenuItem value={MemberRole.Navigator}>Navigator</MenuItem>
         </Select>
       </FormControl>
+      {hiddenOrderButtons ? (
+        <></>
+      ) : (
+        <Box display={'flex'} flexDirection={'column'}>
+          <ButtonGroup orientation={'vertical'} variant={'text'}>
+            <Button
+              size={'small'}
+              disabled={first}
+              onClick={() => {
+                if (onUp && member) {
+                  onUp(member.id)
+                }
+              }}
+            >
+              <ArrowDropUp />
+            </Button>
+            <Button
+              size={'small'}
+              disabled={last}
+              onClick={() => {
+                if (onDown && member) {
+                  onDown(member.id)
+                }
+              }}
+            >
+              <ArrowDropDown />
+            </Button>
+          </ButtonGroup>
+        </Box>
+      )}
       <Button className={classes.button}>
         {member ? (
-          <ExitToApp onClick={onDeleteMember} />
+          <Close onClick={onDeleteMember} />
         ) : (
           <Add
             onClick={() => {

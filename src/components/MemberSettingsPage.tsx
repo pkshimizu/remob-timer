@@ -34,16 +34,72 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
     },
     [dispatch],
   )
+  const handleUp = useCallback(
+    (id) => {
+      const member = members.find((member) => member.id === id)
+      if (member === undefined || member.order === 0) {
+        return
+      }
+      const shiftMember = members.find(
+        (other) => other.order === member.order - 1,
+      )
+      if (shiftMember === undefined) {
+        return
+      }
+      dispatch(
+        updateMember(member.id, member.name, member.role, member.order - 1),
+      )
+      dispatch(
+        updateMember(
+          shiftMember.id,
+          shiftMember.name,
+          shiftMember.role,
+          shiftMember.order + 1,
+        ),
+      )
+    },
+    [dispatch, members],
+  )
+  const handleDown = useCallback(
+    (id) => {
+      const member = members.find((member) => member.id === id)
+      if (member === undefined || member.order === members.length - 1) {
+        return
+      }
+      const shiftMember = members.find(
+        (other) => other.order === member.order + 1,
+      )
+      if (shiftMember === undefined) {
+        return
+      }
+      dispatch(
+        updateMember(member.id, member.name, member.role, member.order + 1),
+      )
+      dispatch(
+        updateMember(
+          shiftMember.id,
+          shiftMember.name,
+          shiftMember.role,
+          shiftMember.order - 1,
+        ),
+      )
+    },
+    [dispatch, members],
+  )
   return (
     <Dialog open={open} fullScreen>
       <Container>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
           <Typography variant={'h4'}>Member Settings</Typography>
-          <MemberForm onSaveMember={handleAddMember} />
-          {members.map((member) => (
+          <MemberForm onSaveMember={handleAddMember} hiddenOrderButtons />
+          {members.map((member, index) => (
             <MemberForm
               member={member}
               key={member.id}
+              first={index === 0}
+              last={index === members.length - 1}
+              onUp={handleUp}
+              onDown={handleDown}
               onSaveMember={handleUpdateMember}
               onDeleteMember={() => handleDeleteMember(member.id)}
             />
