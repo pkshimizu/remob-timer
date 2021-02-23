@@ -1,5 +1,11 @@
 import { Box, Container, makeStyles } from '@material-ui/core'
-import { Error, KeyboardOutlined, Pause, PlayArrow } from '@material-ui/icons'
+import {
+  Error,
+  KeyboardOutlined,
+  Pause,
+  PlayArrow,
+  SkipNext,
+} from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { createSession, fetchSession } from './store/sessions/actions'
@@ -44,6 +50,11 @@ const useStyles = makeStyles({
     fontSize: 64,
   },
   actions: {
+    '& > *': {
+      margin: 8,
+    },
+  },
+  buttons: {
     '& > *': {
       margin: 8,
     },
@@ -215,6 +226,10 @@ function App() {
     }
   }, [status, time, dispatch])
 
+  const handleNextButton = useCallback(() => {
+    dispatch(changeTimerState(TimerState.stopped, 0))
+  }, [status, time, dispatch])
+
   const classes = useStyles()
   return (
     <>
@@ -247,10 +262,17 @@ function App() {
               <Box display={'flex'} alignItems={'center'}>
                 <TimeView value={time} max={partTime} />
               </Box>
-              <ActionButton
-                icon={timerButtonIcon(status)}
-                onClick={handleTimerButton}
-              />
+              <Box
+                display={'flex'}
+                alignItems={'center'}
+                className={classes.buttons}
+              >
+                <ActionButton
+                  icon={timerButtonIcon(status)}
+                  onClick={handleTimerButton}
+                />
+                <ActionButton icon={<SkipNext />} onClick={handleNextButton} />
+              </Box>
             </Box>
           )}
           <Box
