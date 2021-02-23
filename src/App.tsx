@@ -228,7 +228,7 @@ function App() {
 
   const handleNextButton = useCallback(() => {
     dispatch(changeTimerState(TimerState.stopped, 0))
-  }, [status, time, dispatch])
+  }, [dispatch])
 
   const classes = useStyles()
   return (
