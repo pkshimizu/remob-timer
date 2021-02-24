@@ -53,12 +53,12 @@ function IntervalSettingsPage({
             }}
           />
           <TimeField
-            label={'Work Pre Time'}
-            value={settings.workPreTime}
+            label={'Cool Down Time'}
+            value={settings.coolDownTime}
             onChange={(time) => {
               onSave({
                 ...settings,
-                workPreTime: time,
+                coolDownTime: time,
               })
             }}
           />

@@ -6,10 +6,10 @@ export type Config = {
   autostart: boolean
   endTime: number | null
   initialTime: number
-  preTime: number
+  coolDownTime: number
   interval: number
   onTimeOver?: () => void
-  onTimePreOver?: () => void
+  onCoolDownTimeOver?: () => void
   onTimeUpdate?: (time: number) => void
   step: number
   timerType: TimerType
@@ -28,10 +28,10 @@ export const useTimer = ({
   autostart = false,
   endTime,
   initialTime = 0,
-  preTime = 0,
+  coolDownTime = 0,
   interval = 1000,
   onTimeOver,
-  onTimePreOver,
+  onCoolDownTimeOver,
   onTimeUpdate,
   step = 1,
   timerType = 'INCREMENTAL',
@@ -42,7 +42,7 @@ export const useTimer = ({
     timerType,
   })
   const [initTime, setInitTime] = useState(initialTime)
-  const [calledPre, setCalledPre] = useState(false)
+  const [calledCoolDownTimeOver, setCalledCoolDownTimeOver] = useState(false)
 
   const { status, time } = state
 
@@ -64,7 +64,7 @@ export const useTimer = ({
 
   const stop = useCallback(() => {
     dispatch({ type: 'stop' })
-    setCalledPre(false)
+    setCalledCoolDownTimeOver(false)
   }, [])
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export const useTimer = ({
   useEffect(() => {
     if (status !== 'STOPPED' && time === endTime) {
       dispatch({ type: 'stop' })
-      setCalledPre(false)
+      setCalledCoolDownTimeOver(false)
 
       if (typeof onTimeOver === 'function') {
         onTimeOver()
@@ -96,13 +96,15 @@ export const useTimer = ({
     if (status === 'RUNNING') {
       intervalId = setInterval(() => {
         const newTime = timerType === 'DECREMENTAL' ? time - step : time + step
-        const callPreOver =
-          timerType === 'DECREMENTAL' ? newTime <= preTime : newTime >= preTime
-        if (callPreOver && !calledPre) {
-          if (typeof onTimePreOver === 'function') {
-            onTimePreOver()
+        const callCoolDownTimeOver =
+          timerType === 'DECREMENTAL'
+            ? newTime <= coolDownTime
+            : newTime >= coolDownTime
+        if (callCoolDownTimeOver && !calledCoolDownTimeOver) {
+          if (typeof onCoolDownTimeOver === 'function') {
+            onCoolDownTimeOver()
           }
-          setCalledPre(true)
+          setCalledCoolDownTimeOver(true)
         }
         dispatch({
           type: 'set',
@@ -126,9 +128,9 @@ export const useTimer = ({
     timerType,
     interval,
     time,
-    preTime,
-    calledPre,
-    onTimePreOver,
+    coolDownTime,
+    calledCoolDownTimeOver,
+    onCoolDownTimeOver,
   ])
 
   return { pause, reset, start, stop, status, time }

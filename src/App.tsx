@@ -115,19 +115,19 @@ function App() {
     )
   })
   const finishAudio = useMemo(() => new Audio('/assets/final.mp3'), [])
-  const preFinishAudio = useMemo(() => new Audio('/assets/pre_final.mp3'), [])
+  const coolDownAudio = useMemo(() => new Audio('/assets/cool_down.mp3'), [])
   const { time, start, pause, status, stop, reset } = useTimer({
     initialTime: settings.workTime,
-    preTime: settings.workPreTime,
+    coolDownTime: settings.coolDownTime,
     endTime: 0,
     timerType: 'DECREMENTAL',
     onTimeOver: () => {
       finishAudio.play()
       dispatch(changeTimerState(TimerState.stopped, 0))
     },
-    onTimePreOver: () => {
+    onCoolDownTimeOver: () => {
       if (states.intervalPart === IntervalPart.work) {
-        preFinishAudio.play()
+        coolDownAudio.play()
       }
     },
   })

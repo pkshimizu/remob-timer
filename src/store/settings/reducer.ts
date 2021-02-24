@@ -3,7 +3,7 @@ import { Settings, TypistSelectType } from '../../models/settings'
 
 const initState: Settings = {
   workTime: 25 * 60,
-  workPreTime: 20 * 60,
+  coolDownTime: 5 * 60,
   shortBreakTime: 5 * 60,
   longBreakTime: 15 * 60,
   typistSelectionType: TypistSelectType.rotation,
