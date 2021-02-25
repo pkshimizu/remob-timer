@@ -1,5 +1,6 @@
-import { Box, Button, makeStyles } from '@material-ui/core'
+import { Button, makeStyles } from '@material-ui/core'
 import { ReactNode } from 'react'
+import Column from './Column'
 
 const useStyles = makeStyles({
   root: {
@@ -22,10 +23,10 @@ function ActionButton({ icon, text, onClick }: ActionButtonProps) {
       color={'primary'}
       onClick={onClick}
     >
-      <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+      <Column>
         {icon}
         {text}
-      </Box>
+      </Column>
     </Button>
   )
 }

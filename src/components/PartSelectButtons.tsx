@@ -1,4 +1,4 @@
-import { Box, makeStyles } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core'
 import ActionButton from './ActionButton'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
@@ -8,6 +8,7 @@ import {
   startWork,
 } from '../store/states/actions'
 import { DirectionsRun, FreeBreakfast, Wc } from '@material-ui/icons'
+import Row from './Row'
 
 const useStyles = makeStyles({
   actions: {
@@ -33,12 +34,7 @@ function PartSelectButtons() {
     dispatch(startLongBreak())
   }, [dispatch])
   return (
-    <Box
-      display={'flex'}
-      flexDirection={'row'}
-      alignItems={'center'}
-      className={classes.actions}
-    >
+    <Row className={classes.actions}>
       <ActionButton
         icon={<DirectionsRun />}
         text={'work'}
@@ -54,7 +50,7 @@ function PartSelectButtons() {
         text={'long break'}
         onClick={handleStartLongBreak}
       />
-    </Box>
+    </Row>
   )
 }
 

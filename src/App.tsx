@@ -1,4 +1,4 @@
-import { Box, Container, makeStyles } from '@material-ui/core'
+import { Container, makeStyles } from '@material-ui/core'
 import {
   Error,
   KeyboardOutlined,
@@ -30,6 +30,8 @@ import IntervalSettingsPage from './components/IntervalSettingsPage'
 import PartSelectButtons from './components/PartSelectButtons'
 import TimeView from './components/TimeView'
 import dayjs from 'dayjs'
+import Column from './components/Column'
+import Row from './components/Row'
 
 const useStyles = makeStyles({
   root: {
@@ -244,42 +246,27 @@ function App() {
         onClose={() => setOpenIntervalSettings(false)}
       />
       <Container className={classes.root}>
-        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+        <Column>
           <div className={classes.status}>{intervalPartLabel(states)}</div>
-          <Box display={'flex'} alignItems={'center'}>
+          <Row>
             <KeyboardOutlined className={classes.typistIcon} />
             <div className={classes.typist}>{typist}</div>
-          </Box>
+          </Row>
           {states.timerState === TimerState.stopped ? (
             <PartSelectButtons />
           ) : (
-            <Box
-              display={'flex'}
-              flexDirection={'column'}
-              alignItems={'center'}
-              className={classes.actions}
-            >
-              <Box display={'flex'} alignItems={'center'}>
-                <TimeView value={time} max={partTime} />
-              </Box>
-              <Box
-                display={'flex'}
-                alignItems={'center'}
-                className={classes.buttons}
-              >
+            <Column className={classes.actions}>
+              <TimeView value={time} max={partTime} />
+              <Row className={classes.buttons}>
                 <ActionButton
                   icon={timerButtonIcon(status)}
                   onClick={handleTimerButton}
                 />
                 <ActionButton icon={<SkipNext />} onClick={handleNextButton} />
-              </Box>
-            </Box>
+              </Row>
+            </Column>
           )}
-          <Box
-            display={'flex'}
-            alignItems={'center'}
-            className={classes.actions}
-          >
+          <Row className={classes.actions}>
             <SettingButton
               onClick={() => {
                 setOpenMemberSettings(true)
@@ -294,8 +281,8 @@ function App() {
             >
               Settings
             </SettingButton>
-          </Box>
-        </Box>
+          </Row>
+        </Column>
       </Container>
     </>
   )

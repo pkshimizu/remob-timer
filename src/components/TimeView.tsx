@@ -1,4 +1,6 @@
 import { Box, CircularProgress, makeStyles } from '@material-ui/core'
+import Row from './Row'
+import Column from './Column'
 
 const useStyle = makeStyles({
   min: {
@@ -44,26 +46,16 @@ function TimeView({ value, max }: TimeViewProps) {
         alignItems={'center'}
         justifyContent={'center'}
       >
-        <Box display={'flex'} flexDirection={'row'}>
-          <Box
-            display={'flex'}
-            flexDirection={'column'}
-            alignItems={'center'}
-            className={classes.min}
-          >
+        <Row>
+          <Column className={classes.min}>
             <Box>{zeroPadding(min, 2)}</Box>
             <Box className={classes.unit}>min</Box>
-          </Box>
-          <Box
-            display={'flex'}
-            flexDirection={'column'}
-            alignItems={'center'}
-            className={classes.sec}
-          >
+          </Column>
+          <Column className={classes.sec}>
             <Box>{zeroPadding(sec, 2)}</Box>
             <Box className={classes.unit}>sec</Box>
-          </Box>
-        </Box>
+          </Column>
+        </Row>
       </Box>
     </Box>
   )

@@ -1,10 +1,11 @@
-import { Box, Button, Container, Dialog, Typography } from '@material-ui/core'
+import { Button, Container, Dialog, Typography } from '@material-ui/core'
 import { Member } from '../models/member'
 import MemberForm from './MemberForm'
 import { useDispatch, useSelector } from 'react-redux'
 import { useCallback } from 'react'
 import { addMember, deleteMember, updateMember } from '../store/members/actions'
 import { RootState } from '../store'
+import Column from './Column'
 
 export interface MemberSettingsPageProps {
   open: boolean
@@ -89,7 +90,7 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
   return (
     <Dialog open={open} fullScreen>
       <Container>
-        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+        <Column>
           <Typography variant={'h4'}>Member Settings</Typography>
           <MemberForm onSaveMember={handleAddMember} hiddenOrderButtons />
           {members.map((member, index) => (
@@ -105,7 +106,7 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
             />
           ))}
           <Button onClick={onClose}>Close</Button>
-        </Box>
+        </Column>
       </Container>
     </Dialog>
   )

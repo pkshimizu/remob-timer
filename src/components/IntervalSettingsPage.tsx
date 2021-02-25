@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Container,
   Dialog,
@@ -13,6 +12,7 @@ import {
 import { Settings, TypistSelectType } from '../models/settings'
 import { useState } from 'react'
 import TimeField from './TimeField'
+import Column from './Column'
 
 const useStyles = makeStyles({
   typist: {
@@ -40,7 +40,7 @@ function IntervalSettingsPage({
   return (
     <Dialog open={open} fullScreen>
       <Container>
-        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+        <Column>
           <Typography variant={'h4'}>Interval Settings</Typography>
           <TimeField
             label={'Work Time'}
@@ -104,7 +104,7 @@ function IntervalSettingsPage({
             </Select>
           </FormControl>
           <Button onClick={onClose}>Close</Button>
-        </Box>
+        </Column>
       </Container>
     </Dialog>
   )

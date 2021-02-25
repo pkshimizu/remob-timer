@@ -7,9 +7,17 @@ export interface NumberFieldProps {
   max: number
   suffix?: string
   onChange: (value: number) => void
+  className?: string
 }
 
-function NumberField({ num, min, max, suffix, onChange }: NumberFieldProps) {
+function NumberField({
+  num,
+  min,
+  max,
+  suffix,
+  onChange,
+  className,
+}: NumberFieldProps) {
   const [value, setValue] = useState(String(num))
   return (
     <TextField
@@ -26,6 +34,7 @@ function NumberField({ num, min, max, suffix, onChange }: NumberFieldProps) {
           <InputAdornment position={'end'}>{suffix}</InputAdornment>
         ) : undefined,
       }}
+      className={className}
     />
   )
 }

@@ -1,6 +1,5 @@
 import { Member, MemberRole } from '../models/member'
 import {
-  Box,
   Button,
   ButtonGroup,
   FormControl,
@@ -12,6 +11,8 @@ import {
 } from '@material-ui/core'
 import { Add, ArrowDropDown, ArrowDropUp, Close } from '@material-ui/icons'
 import { useCallback, useState } from 'react'
+import Row from './Row'
+import Column from './Column'
 
 const useStyles = makeStyles({
   name: {
@@ -67,7 +68,7 @@ function MemberForm({
     [member, onSaveMember],
   )
   return (
-    <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+    <Row>
       <TextField
         label={'Name'}
         value={name}
@@ -102,7 +103,7 @@ function MemberForm({
       {hiddenOrderButtons ? (
         <></>
       ) : (
-        <Box display={'flex'} flexDirection={'column'}>
+        <Column>
           <ButtonGroup orientation={'vertical'} variant={'text'}>
             <Button
               size={'small'}
@@ -127,7 +128,7 @@ function MemberForm({
               <ArrowDropDown />
             </Button>
           </ButtonGroup>
-        </Box>
+        </Column>
       )}
       <Button className={classes.button}>
         {member ? (
@@ -144,7 +145,7 @@ function MemberForm({
           />
         )}
       </Button>
-    </Box>
+    </Row>
   )
 }
 
