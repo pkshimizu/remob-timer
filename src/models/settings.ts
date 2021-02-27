@@ -9,4 +9,5 @@ export interface Settings {
   shortBreakTime: number
   longBreakTime: number
   typistSelectionType: TypistSelectType
+  adsense: boolean
 }

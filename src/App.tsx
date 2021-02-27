@@ -32,6 +32,7 @@ import TimeView from './components/TimeView'
 import dayjs from 'dayjs'
 import Column from './components/Column'
 import Row from './components/Row'
+import GoogleAdsense from './components/Adsense'
 
 const useStyles = makeStyles({
   root: {
@@ -282,6 +283,7 @@ function App() {
               Settings
             </SettingButton>
           </Row>
+          <GoogleAdsense />
         </Column>
       </Container>
     </>

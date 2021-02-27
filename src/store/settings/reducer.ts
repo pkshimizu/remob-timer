@@ -7,12 +7,16 @@ const initState: Settings = {
   shortBreakTime: 5 * 60,
   longBreakTime: 15 * 60,
   typistSelectionType: TypistSelectType.rotation,
+  adsense: true,
 }
 
 const settingsReducer = (state = initState, action: SettingsActionTypes) => {
   switch (action.type) {
     case 'SettingsUpdate':
-      return action.payload.settings
+      return {
+        ...initState,
+        ...action.payload.settings,
+      }
   }
   return state
 }
