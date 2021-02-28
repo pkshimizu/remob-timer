@@ -1,11 +1,5 @@
 import { Container, makeStyles } from '@material-ui/core'
-import {
-  Error,
-  KeyboardOutlined,
-  Pause,
-  PlayArrow,
-  SkipNext,
-} from '@material-ui/icons'
+import { Error, Pause, PlayArrow, SkipNext } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { createSession, fetchSession } from './store/sessions/actions'
@@ -33,20 +27,13 @@ import dayjs from 'dayjs'
 import Column from './components/Column'
 import Row from './components/Row'
 import GoogleAdsense from './components/Adsense'
+import IntervalPartLabel from './components/IntervalPartLabel'
+import TypistView from './components/TypistView'
 
 const useStyles = makeStyles({
   root: {
     marginTop: 16,
     marginBottom: 16,
-  },
-  status: {
-    fontSize: 32,
-  },
-  typistIcon: {
-    fontSize: 32,
-  },
-  typist: {
-    fontSize: 32,
   },
   remainingTime: {
     marginTop: 32,
@@ -74,21 +61,6 @@ const timerButtonIcon = (status: Status): ReactNode => {
   return <Error />
 }
 
-const intervalPartLabel = (states: States): string => {
-  if (states.timerState === TimerState.stopped) {
-    return 'Select'
-  }
-  switch (states.intervalPart) {
-    case IntervalPart.work:
-      return 'Work'
-    case IntervalPart.shortBreak:
-      return 'Break'
-    case IntervalPart.longBreak:
-      return 'Long Break'
-  }
-  return 'Unknown'
-}
-
 const intervalPartTime = (intervalPart: IntervalPart, settings: Settings) => {
   switch (intervalPart) {
     case IntervalPart.work:
@@ -111,12 +83,6 @@ function App() {
   )
   const settings = useSelector<RootState, Settings>((state) => state.settings)
   const states = useSelector<RootState, States>((state) => state.states)
-  const typist = useSelector<RootState, string | null>((state) => {
-    const id = state.states.typist
-    return (
-      state.members.members.find((member) => member.id === id)?.name || null
-    )
-  })
   const finishAudio = useMemo(() => new Audio('/assets/final.mp3'), [])
   const coolDownAudio = useMemo(() => new Audio('/assets/cool_down.mp3'), [])
   const { time, start, pause, status, stop, reset } = useTimer({
@@ -248,11 +214,8 @@ function App() {
       />
       <Container className={classes.root}>
         <Column>
-          <div className={classes.status}>{intervalPartLabel(states)}</div>
-          <Row>
-            <KeyboardOutlined className={classes.typistIcon} />
-            <div className={classes.typist}>{typist}</div>
-          </Row>
+          <IntervalPartLabel />
+          <TypistView />
           {states.timerState === TimerState.stopped ? (
             <PartSelectButtons />
           ) : (
