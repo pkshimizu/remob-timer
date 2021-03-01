@@ -17,7 +17,6 @@ export const fetchMembers = (
         snapshot.docChanges().forEach(({ doc, type }) => {
           switch (type) {
             case 'added':
-              console.log(doc.data())
               dispatch({
                 type: 'MemberAdd',
                 payload: {
@@ -32,7 +31,6 @@ export const fetchMembers = (
               })
               return
             case 'modified':
-              console.log(doc.data())
               dispatch({
                 type: 'MemberUpdate',
                 payload: {
