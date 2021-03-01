@@ -1,7 +1,8 @@
-import { Member, MemberRole } from '../models/member'
+import { Member, MemberActive, MemberRole } from '../models/member'
 import {
   Button,
   ButtonGroup,
+  Checkbox,
   FormControl,
   InputLabel,
   makeStyles,
@@ -37,6 +38,7 @@ interface MemberFormProps {
     id: string | null,
     name: string,
     role: MemberRole,
+    active: MemberActive,
     order?: number,
   ) => void
   onDeleteMember?: () => void
@@ -59,26 +61,43 @@ function MemberForm({
   const [role, setRole] = useState<MemberRole>(
     member?.role || MemberRole.Navigator,
   )
+  const [active, setActive] = useState<MemberActive>(
+    member?.active || MemberActive.Active,
+  )
   const handleChangeMember = useCallback(
-    (name, role) => {
+    (name, role, active) => {
       if (member && name && role) {
-        onSaveMember(member.id, name, role, member.order)
+        onSaveMember(member.id, name, role, active, member.order)
       }
     },
     [member, onSaveMember],
   )
   return (
     <Row>
+      {member ? (
+        <Checkbox
+          checked={active === MemberActive.Active}
+          onChange={(event) => {
+            const active = event.target.checked
+              ? MemberActive.Active
+              : MemberActive.Inactive
+            setActive(active)
+            handleChangeMember(name, role, active)
+          }}
+        />
+      ) : (
+        <></>
+      )}
       <TextField
         label={'Name'}
         value={name}
         onChange={(event) => {
           setName(event.target.value)
-          handleChangeMember(event.target.value, role)
+          handleChangeMember(event.target.value, role, active)
         }}
         onKeyDown={(event) => {
           if (event.key === 'Enter') {
-            onSaveMember(null, name, role)
+            onSaveMember(null, name, role, active)
             setName('')
             setRole(MemberRole.Navigator)
           }
@@ -92,7 +111,7 @@ function MemberForm({
           value={role}
           onChange={(event) => {
             setRole(event.target.value as MemberRole)
-            handleChangeMember(name, event.target.value)
+            handleChangeMember(name, event.target.value, active)
           }}
           className={classes.role}
         >
@@ -137,7 +156,7 @@ function MemberForm({
           <Add
             onClick={() => {
               if (name && role) {
-                onSaveMember(null, name, role)
+                onSaveMember(null, name, role, active)
                 setName('')
                 setRole(MemberRole.Navigator)
               }

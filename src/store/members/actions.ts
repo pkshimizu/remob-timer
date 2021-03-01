@@ -2,7 +2,7 @@ import { ThunkAction } from 'redux-thunk'
 import { RootState } from '../index'
 import { MembersActionTypes } from './types'
 import firebase from 'firebase/app'
-import { Member, MemberRole } from '../../models/member'
+import { Member, MemberActive, MemberRole } from '../../models/member'
 
 export const fetchMembers = (
   id: string,
@@ -17,6 +17,7 @@ export const fetchMembers = (
         snapshot.docChanges().forEach(({ doc, type }) => {
           switch (type) {
             case 'added':
+              console.log(doc.data())
               dispatch({
                 type: 'MemberAdd',
                 payload: {
@@ -24,12 +25,14 @@ export const fetchMembers = (
                     id: doc.id,
                     name: doc.data().name,
                     role: doc.data().role,
+                    active: doc.data().active || MemberActive.Active,
                     order: doc.data().order,
                   },
                 },
               })
               return
             case 'modified':
+              console.log(doc.data())
               dispatch({
                 type: 'MemberUpdate',
                 payload: {
@@ -37,6 +40,7 @@ export const fetchMembers = (
                     id: doc.id,
                     name: doc.data().name,
                     role: doc.data().role,
+                    active: doc.data().active || MemberActive.Active,
                     order: doc.data().order,
                   },
                 },
@@ -66,6 +70,7 @@ export const addMember = (
     firestore.collection('sessions').doc(sessionId).collection('members').add({
       name: name,
       role: role,
+      active: MemberActive.Active,
       order: order,
     })
   }
@@ -75,6 +80,7 @@ export const updateMember = (
   id: string,
   name: string,
   role: MemberRole,
+  active: MemberActive,
   order: number,
 ): ThunkAction<any, RootState, any, MembersActionTypes> => {
   return (dispatch, getState, { getFirestore }) => {
@@ -88,6 +94,7 @@ export const updateMember = (
       .update({
         name: name,
         role: role,
+        active: active,
         order: order,
       })
   }

@@ -24,8 +24,8 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
     [dispatch],
   )
   const handleUpdateMember = useCallback(
-    (id, name, role, order) => {
-      dispatch(updateMember(id, name, role, order))
+    (id, name, role, active, order) => {
+      dispatch(updateMember(id, name, role, active, order))
     },
     [dispatch],
   )
@@ -48,13 +48,20 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
         return
       }
       dispatch(
-        updateMember(member.id, member.name, member.role, member.order - 1),
+        updateMember(
+          member.id,
+          member.name,
+          member.role,
+          member.active,
+          member.order - 1,
+        ),
       )
       dispatch(
         updateMember(
           shiftMember.id,
           shiftMember.name,
           shiftMember.role,
+          shiftMember.active,
           shiftMember.order + 1,
         ),
       )
@@ -74,13 +81,20 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
         return
       }
       dispatch(
-        updateMember(member.id, member.name, member.role, member.order + 1),
+        updateMember(
+          member.id,
+          member.name,
+          member.role,
+          member.active,
+          member.order + 1,
+        ),
       )
       dispatch(
         updateMember(
           shiftMember.id,
           shiftMember.name,
           shiftMember.role,
+          shiftMember.active,
           shiftMember.order - 1,
         ),
       )

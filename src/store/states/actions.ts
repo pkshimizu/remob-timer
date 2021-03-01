@@ -3,7 +3,7 @@ import { RootState } from '../index'
 import { StatesActionTypes } from './types'
 import firebase from 'firebase/app'
 import { IntervalPart, States, TimerState } from '../../models/states'
-import { Member, MemberRole } from '../../models/member'
+import { Member, MemberActive, MemberRole } from '../../models/member'
 import { Settings, TypistSelectType } from '../../models/settings'
 import _ from 'lodash'
 import dayjs from 'dayjs'
@@ -36,7 +36,9 @@ const selectTypist = (
   states: States,
 ): string => {
   const navigators = members.filter(
-    (member) => member.role === MemberRole.Navigator,
+    (member) =>
+      member.role === MemberRole.Navigator &&
+      member.active === MemberActive.Active,
   )
   if (navigators.length === 0) {
     return ''
