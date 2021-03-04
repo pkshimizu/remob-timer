@@ -29,12 +29,15 @@ function TimeView({ value, max }: TimeViewProps) {
   const classes = useStyle()
   const min = Math.floor(value / 60)
   const sec = value % 60
+  const rate = Math.min((value / max) * 100, 100)
+  const color = rate > 10 ? 'primary' : 'secondary'
   return (
     <Box position={'relative'} display={'inline-flex'}>
       <CircularProgress
         variant={'determinate'}
-        value={Math.min((value / max) * 100, 100)}
+        value={rate}
         size={160}
+        color={color}
       />
       <Box
         top={0}
