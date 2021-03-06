@@ -26,3 +26,13 @@ jobs:
           projectId: remob-timer
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
+
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v2
+        if: always()
+        with:
+          status: ${{ job.status }}
+          author_name: 'deploy'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
