@@ -36,7 +36,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint:fix": "prettier --write ./src/**/*.{ts,tsx}"
+    "lint:fix": "prettier --write ./src/**/*.{ts,tsx}",
+    "version": "sh scripts/create_version_json.sh"
   },
   "eslintConfig": {
     "extends": [
@@ -68,7 +69,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged && yarn run version"
     }
   },
   "prettier": {
