@@ -75,11 +75,7 @@ export const addMember = (
 }
 
 export const updateMember = (
-  id: string,
-  name: string,
-  role: MemberRole,
-  active: MemberActive,
-  order: number,
+  member: Member,
 ): ThunkAction<any, RootState, any, MembersActionTypes> => {
   return (dispatch, getState, { getFirestore }) => {
     const sessionId = getState().session.id
@@ -88,12 +84,12 @@ export const updateMember = (
       .collection('sessions')
       .doc(sessionId)
       .collection('members')
-      .doc(id)
+      .doc(member.id)
       .update({
-        name: name,
-        role: role,
-        active: active,
-        order: order,
+        name: member.name,
+        role: member.role,
+        active: member.active,
+        order: member.order,
       })
   }
 }

@@ -25,7 +25,15 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
   )
   const handleUpdateMember = useCallback(
     (id, name, role, active, order) => {
-      dispatch(updateMember(id, name, role, active, order))
+      dispatch(
+        updateMember({
+          id: id,
+          name: name,
+          role: role,
+          active: active,
+          order: order,
+        }),
+      )
     },
     [dispatch],
   )
@@ -37,67 +45,55 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
   )
   const handleUp = useCallback(
     (id) => {
-      const member = members.find((member) => member.id === id)
-      if (member === undefined || member.order === 0) {
+      const targetIndex = members.findIndex((member) => member.id === id)
+      if (
+        targetIndex === undefined ||
+        targetIndex === -1 ||
+        targetIndex === 0
+      ) {
         return
       }
-      const shiftMember = members.find(
-        (other) => other.order === member.order - 1,
-      )
-      if (shiftMember === undefined) {
-        return
-      }
-      dispatch(
-        updateMember(
-          member.id,
-          member.name,
-          member.role,
-          member.active,
-          member.order - 1,
-        ),
-      )
-      dispatch(
-        updateMember(
-          shiftMember.id,
-          shiftMember.name,
-          shiftMember.role,
-          shiftMember.active,
-          shiftMember.order + 1,
-        ),
-      )
+      members.forEach((member, index) => {
+        const order =
+          index === targetIndex - 1
+            ? targetIndex
+            : index === targetIndex
+            ? targetIndex - 1
+            : index
+        dispatch(
+          updateMember({
+            ...member,
+            order: order,
+          }),
+        )
+      })
     },
     [dispatch, members],
   )
   const handleDown = useCallback(
     (id) => {
-      const member = members.find((member) => member.id === id)
-      if (member === undefined || member.order === members.length - 1) {
+      const targetIndex = members.findIndex((member) => member.id === id)
+      if (
+        targetIndex === undefined ||
+        targetIndex === -1 ||
+        targetIndex === members.length - 1
+      ) {
         return
       }
-      const shiftMember = members.find(
-        (other) => other.order === member.order + 1,
-      )
-      if (shiftMember === undefined) {
-        return
-      }
-      dispatch(
-        updateMember(
-          member.id,
-          member.name,
-          member.role,
-          member.active,
-          member.order + 1,
-        ),
-      )
-      dispatch(
-        updateMember(
-          shiftMember.id,
-          shiftMember.name,
-          shiftMember.role,
-          shiftMember.active,
-          shiftMember.order - 1,
-        ),
-      )
+      members.forEach((member, index) => {
+        const order =
+          index === targetIndex + 1
+            ? targetIndex
+            : index === targetIndex
+            ? targetIndex + 1
+            : index
+        dispatch(
+          updateMember({
+            ...member,
+            order: order,
+          }),
+        )
+      })
     },
     [dispatch, members],
   )
