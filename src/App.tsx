@@ -29,6 +29,7 @@ import Row from './components/Row'
 import GoogleAdsense from './components/Adsense'
 import IntervalPartLabel from './components/IntervalPartLabel'
 import TypistView from './components/TypistView'
+import VersionChecker from './components/VersionChecker'
 
 const useStyles = makeStyles({
   root: {
@@ -212,6 +213,7 @@ function App() {
         onSave={(settings) => dispatch(updateSettings(settings))}
         onClose={() => setOpenIntervalSettings(false)}
       />
+      <VersionChecker />
       <Container className={classes.root}>
         <Column>
           <IntervalPartLabel />

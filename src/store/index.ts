@@ -8,6 +8,7 @@ import { createLogger } from 'redux-logger'
 import settingsReducer from './settings/reducer'
 import membersReducer from './members/reducer'
 import statesReducer from './states/reducer'
+import axios from 'axios'
 
 const reducers = combineReducers({
   session: sessionReducer,
@@ -28,7 +29,7 @@ if (process.env.NODE_ENV === 'development') {
   middlewares.push(logger)
 }
 
-middlewares.push(thunk.withExtraArgument({ getFirebase, getFirestore }))
+middlewares.push(thunk.withExtraArgument({ getFirebase, getFirestore, axios }))
 
 const store = createStore(
   reducers,

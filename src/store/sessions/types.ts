@@ -12,4 +12,15 @@ interface SessionUpdateAction {
   }
 }
 
-export type SessionActionTypes = SessionCreateAction | SessionUpdateAction
+interface VersionUpdateAction {
+  type: 'VersionUpdate'
+  payload: {
+    version: string
+    requiredUpdate: boolean
+  }
+}
+
+export type SessionActionTypes =
+  | SessionCreateAction
+  | SessionUpdateAction
+  | VersionUpdateAction

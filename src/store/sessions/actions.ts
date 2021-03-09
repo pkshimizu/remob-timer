@@ -1,6 +1,7 @@
 import { ThunkAction } from 'redux-thunk'
 import { RootState } from '../index'
 import { SessionActionTypes } from './types'
+import { AxiosResponse } from 'axios'
 
 export const createSession = (): ThunkAction<
   void,
@@ -43,5 +44,27 @@ export const fetchSession = (
           },
         })
       })
+  }
+}
+
+export const fetchVersion = (): ThunkAction<
+  void,
+  RootState,
+  any,
+  SessionActionTypes
+> => {
+  return (dispatch, getState, { axios }) => {
+    axios.get('/version.json').then((res: AxiosResponse) => {
+      const state = getState()
+      const version = res.data.version
+      const current = state.session.version
+      dispatch({
+        type: 'VersionUpdate',
+        payload: {
+          version: version,
+          requiredUpdate: current !== undefined && current !== version,
+        },
+      })
+    })
   }
 }
