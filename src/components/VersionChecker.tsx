@@ -17,7 +17,7 @@ function VersionChecker() {
     return () => {
       clearInterval(intervalId)
     }
-  }, [])
+  }, [dispatch])
   return (
     <Snackbar open={requiredUpdate}>
       <Alert
