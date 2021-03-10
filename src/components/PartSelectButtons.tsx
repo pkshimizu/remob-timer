@@ -9,15 +9,18 @@ import {
 } from '../store/states/actions'
 import { DirectionsRun, FreeBreakfast, Wc } from '@material-ui/icons'
 import Row from './Row'
+import Column from './Column'
 
 const useStyles = makeStyles({
   actions: {
     '& > *': {
-      margin: 8,
+      marginTop: 0,
     },
   },
-  button: {
-    fontSize: 32,
+  breakButtons: {
+    '& > *': {
+      margin: 8,
+    },
   },
 })
 
@@ -34,23 +37,31 @@ function PartSelectButtons() {
     dispatch(startLongBreak())
   }, [dispatch])
   return (
-    <Row className={classes.actions}>
+    <Column className={classes.actions}>
       <ActionButton
-        icon={<DirectionsRun />}
+        icon={<DirectionsRun fontSize={'large'} />}
         text={'work'}
+        size={'large'}
+        circle
         onClick={handleStartWork}
       />
-      <ActionButton
-        icon={<Wc />}
-        text={'short break'}
-        onClick={handleStartShortBreak}
-      />
-      <ActionButton
-        icon={<FreeBreakfast />}
-        text={'long break'}
-        onClick={handleStartLongBreak}
-      />
-    </Row>
+      <Row className={classes.breakButtons}>
+        <ActionButton
+          icon={<Wc />}
+          text={'short break'}
+          size={'middle'}
+          circle
+          onClick={handleStartShortBreak}
+        />
+        <ActionButton
+          icon={<FreeBreakfast />}
+          text={'long break'}
+          size={'middle'}
+          circle
+          onClick={handleStartLongBreak}
+        />
+      </Row>
+    </Column>
   )
 }
 

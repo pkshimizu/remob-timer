@@ -6,8 +6,11 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 
 const useStyles = makeStyles({
+  root: {
+    marginBottom: 8,
+  },
   typistIcon: {
-    fontSize: 32,
+    fontSize: 48,
     marginRight: 8,
   },
   typist: {
@@ -24,10 +27,14 @@ function TypistView() {
     )
   })
   return (
-    <Row>
-      <KeyboardOutlined className={classes.typistIcon} />
-      <div className={classes.typist}>{typist}</div>
-    </Row>
+    <>
+      {typist === null ? undefined : (
+        <Row className={classes.root}>
+          <KeyboardOutlined className={classes.typistIcon} />
+          <div className={classes.typist}>{typist}</div>
+        </Row>
+      )}
+    </>
   )
 }
 

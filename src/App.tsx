@@ -42,6 +42,11 @@ const useStyles = makeStyles({
   },
   actions: {
     '& > *': {
+      margin: 0,
+    },
+  },
+  settings: {
+    '& > *': {
       margin: 8,
     },
   },
@@ -226,13 +231,18 @@ function App() {
               <Row className={classes.buttons}>
                 <ActionButton
                   icon={timerButtonIcon(status)}
+                  circle
                   onClick={handleTimerButton}
                 />
-                <ActionButton icon={<SkipNext />} onClick={handleNextButton} />
+                <ActionButton
+                  icon={<SkipNext />}
+                  circle
+                  onClick={handleNextButton}
+                />
               </Row>
             </Column>
           )}
-          <Row className={classes.actions}>
+          <Row className={classes.settings}>
             <SettingButton
               onClick={() => {
                 setOpenMemberSettings(true)

@@ -15,8 +15,19 @@ import TimeField from './TimeField'
 import Column from './Column'
 
 const useStyles = makeStyles({
+  main: {
+    margin: 16,
+  },
+  title: {
+    marginBottom: 8,
+  },
   typist: {
     width: 160,
+  },
+  fields: {
+    '& > *': {
+      marginBottom: 8,
+    },
   },
 })
 
@@ -40,69 +51,73 @@ function IntervalSettingsPage({
   return (
     <Dialog open={open} fullScreen>
       <Container>
-        <Column>
-          <Typography variant={'h4'}>Interval Settings</Typography>
-          <TimeField
-            label={'Work Time'}
-            value={settings.workTime}
-            onChange={(time) => {
-              onSave({
-                ...settings,
-                workTime: time,
-              })
-            }}
-          />
-          <TimeField
-            label={'Cool Down Time'}
-            value={settings.coolDownTime}
-            onChange={(time) => {
-              onSave({
-                ...settings,
-                coolDownTime: time,
-              })
-            }}
-          />
-          <TimeField
-            label={'Short Break Time'}
-            value={settings.shortBreakTime}
-            onChange={(time) => {
-              onSave({
-                ...settings,
-                shortBreakTime: time,
-              })
-            }}
-          />
-          <TimeField
-            label={'Long Break Time'}
-            value={settings.longBreakTime}
-            onChange={(time) => {
-              onSave({
-                ...settings,
-                longBreakTime: time,
-              })
-            }}
-          />
-          <FormControl>
-            <InputLabel id={'typist-select-type'}>
-              Typist Select Strategy
-            </InputLabel>
-            <Select
-              labelId={'typist-select-type'}
-              value={typistSelectionType}
-              onChange={(event) => {
-                const type = event.target.value as TypistSelectType
-                setTypistSelectionType(type)
+        <Column className={classes.main}>
+          <Typography variant={'h4'} className={classes.title}>
+            Interval Settings
+          </Typography>
+          <Column className={classes.fields}>
+            <TimeField
+              label={'Work Time'}
+              value={settings.workTime}
+              onChange={(time) => {
                 onSave({
                   ...settings,
-                  typistSelectionType: type,
+                  workTime: time,
                 })
               }}
-              className={classes.typist}
-            >
-              <MenuItem value={TypistSelectType.rotation}>Rotation</MenuItem>
-              <MenuItem value={TypistSelectType.random}>Random</MenuItem>
-            </Select>
-          </FormControl>
+            />
+            <TimeField
+              label={'Cool Down Time'}
+              value={settings.coolDownTime}
+              onChange={(time) => {
+                onSave({
+                  ...settings,
+                  coolDownTime: time,
+                })
+              }}
+            />
+            <TimeField
+              label={'Short Break Time'}
+              value={settings.shortBreakTime}
+              onChange={(time) => {
+                onSave({
+                  ...settings,
+                  shortBreakTime: time,
+                })
+              }}
+            />
+            <TimeField
+              label={'Long Break Time'}
+              value={settings.longBreakTime}
+              onChange={(time) => {
+                onSave({
+                  ...settings,
+                  longBreakTime: time,
+                })
+              }}
+            />
+            <FormControl>
+              <InputLabel id={'typist-select-type'}>
+                Typist Select Strategy
+              </InputLabel>
+              <Select
+                labelId={'typist-select-type'}
+                value={typistSelectionType}
+                onChange={(event) => {
+                  const type = event.target.value as TypistSelectType
+                  setTypistSelectionType(type)
+                  onSave({
+                    ...settings,
+                    typistSelectionType: type,
+                  })
+                }}
+                className={classes.typist}
+              >
+                <MenuItem value={TypistSelectType.rotation}>Rotation</MenuItem>
+                <MenuItem value={TypistSelectType.random}>Random</MenuItem>
+              </Select>
+            </FormControl>
+          </Column>
           <Button onClick={onClose}>Close</Button>
         </Column>
       </Container>

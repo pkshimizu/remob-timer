@@ -6,20 +6,21 @@ import { RootState } from '../store'
 const useStyles = makeStyles({
   root: {
     fontSize: 32,
+    marginBottom: 8,
   },
 })
 
 const intervalPartLabel = (states: States): string => {
   if (states.timerState === TimerState.stopped) {
-    return 'Select'
+    return "What's next?"
   }
   switch (states.intervalPart) {
     case IntervalPart.work:
-      return 'Work'
+      return 'WORK'
     case IntervalPart.shortBreak:
-      return 'Break'
+      return 'BREAK'
     case IntervalPart.longBreak:
-      return 'Long Break'
+      return 'LONG BREAK'
   }
   return 'Unknown'
 }

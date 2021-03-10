@@ -20,6 +20,9 @@ const useStyles = makeStyles({
     width: 160,
     margin: 8,
   },
+  roleForm: {
+    marginTop: 8,
+  },
   role: {
     width: 120,
     margin: 8,
@@ -104,7 +107,7 @@ function MemberForm({
         }}
         className={classes.name}
       />
-      <FormControl>
+      <FormControl className={classes.roleForm}>
         <InputLabel id={'member-role'}>Role</InputLabel>
         <Select
           labelId={'member-role'}

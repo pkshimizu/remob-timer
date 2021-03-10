@@ -1,4 +1,10 @@
-import { Button, Container, Dialog, Typography } from '@material-ui/core'
+import {
+  Button,
+  Container,
+  Dialog,
+  makeStyles,
+  Typography,
+} from '@material-ui/core'
 import { Member } from '../models/member'
 import MemberForm from './MemberForm'
 import { useDispatch, useSelector } from 'react-redux'
@@ -12,7 +18,23 @@ export interface MemberSettingsPageProps {
   onClose: () => void
 }
 
+const useStyles = makeStyles({
+  main: {
+    margin: 16,
+  },
+  title: {
+    marginBottom: 8,
+  },
+  forms: {
+    '& > *': {
+      marginTop: 4,
+      marginBottom: 4,
+    },
+  },
+})
+
 function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
+  const classes = useStyles()
   const members = useSelector<RootState, Member[]>(
     (state) => state.members.members,
   )
@@ -100,21 +122,25 @@ function MemberSettingsPage({ open, onClose }: MemberSettingsPageProps) {
   return (
     <Dialog open={open} fullScreen>
       <Container>
-        <Column>
-          <Typography variant={'h4'}>Member Settings</Typography>
-          <MemberForm onSaveMember={handleAddMember} hiddenOrderButtons />
-          {members.map((member, index) => (
-            <MemberForm
-              member={member}
-              key={member.id}
-              first={index === 0}
-              last={index === members.length - 1}
-              onUp={handleUp}
-              onDown={handleDown}
-              onSaveMember={handleUpdateMember}
-              onDeleteMember={() => handleDeleteMember(member.id)}
-            />
-          ))}
+        <Column className={classes.main}>
+          <Typography variant={'h4'} className={classes.title}>
+            Member Settings
+          </Typography>
+          <Column className={classes.forms}>
+            <MemberForm onSaveMember={handleAddMember} hiddenOrderButtons />
+            {members.map((member, index) => (
+              <MemberForm
+                member={member}
+                key={member.id}
+                first={index === 0}
+                last={index === members.length - 1}
+                onUp={handleUp}
+                onDown={handleDown}
+                onSaveMember={handleUpdateMember}
+                onDeleteMember={() => handleDeleteMember(member.id)}
+              />
+            ))}
+          </Column>
           <Button onClick={onClose}>Close</Button>
         </Column>
       </Container>
