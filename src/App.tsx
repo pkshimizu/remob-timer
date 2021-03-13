@@ -30,6 +30,7 @@ import GoogleAdsense from './components/Adsense'
 import IntervalPartLabel from './components/IntervalPartLabel'
 import TypistView from './components/TypistView'
 import VersionChecker from './components/VersionChecker'
+import VersionView from './components/VersionView'
 
 const useStyles = makeStyles({
   root: {
@@ -258,6 +259,7 @@ function App() {
               Settings
             </SettingButton>
           </Row>
+          <VersionView />
           <GoogleAdsense />
         </Column>
       </Container>

@@ -11,6 +11,7 @@ function VersionChecker() {
   )
   const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(fetchVersion())
     const intervalId = setInterval(() => {
       dispatch(fetchVersion())
     }, 1000 * 60 * 10)
