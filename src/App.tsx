@@ -1,19 +1,10 @@
 import { Container, makeStyles } from '@material-ui/core'
-import { Error, Pause, PlayArrow, SkipNext } from '@material-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { createSession, fetchSession } from './store/sessions/actions'
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import ActionButton from './components/ActionButton'
+import React, { useEffect, useMemo, useState } from 'react'
 import SettingButton from './components/SettingButton'
 import { useTimer } from './store/timers/hook'
-import { Status } from './store/timers/types'
 import { Settings } from './models/settings'
 import { fetchSettings, updateSettings } from './store/settings/actions'
 import { fetchMembers } from './store/members/actions'
@@ -31,15 +22,12 @@ import IntervalPartLabel from './components/IntervalPartLabel'
 import TypistView from './components/TypistView'
 import VersionChecker from './components/VersionChecker'
 import VersionView from './components/VersionView'
+import TimerButtons from './components/TimerButtons'
 
 const useStyles = makeStyles({
   root: {
     marginTop: 16,
     marginBottom: 16,
-  },
-  remainingTime: {
-    marginTop: 32,
-    fontSize: 64,
   },
   actions: {
     '& > *': {
@@ -51,22 +39,7 @@ const useStyles = makeStyles({
       margin: 8,
     },
   },
-  buttons: {
-    '& > *': {
-      margin: 8,
-    },
-  },
 })
-
-const timerButtonIcon = (status: Status): ReactNode => {
-  if (status === 'RUNNING') {
-    return <Pause />
-  }
-  if (status === 'STOPPED' || status === 'PAUSED') {
-    return <PlayArrow />
-  }
-  return <Error />
-}
 
 const intervalPartTime = (intervalPart: IntervalPart, settings: Settings) => {
   switch (intervalPart) {
@@ -193,18 +166,6 @@ function App() {
     partTime,
     finishAudio,
   ])
-  const handleTimerButton = useCallback(() => {
-    if (status === 'RUNNING') {
-      dispatch(changeTimerState(TimerState.paused, time))
-    }
-    if (status === 'PAUSED' || status === 'STOPPED') {
-      dispatch(changeTimerState(TimerState.running, time))
-    }
-  }, [status, time, dispatch])
-
-  const handleNextButton = useCallback(() => {
-    dispatch(changeTimerState(TimerState.stopped, 0))
-  }, [dispatch])
 
   const classes = useStyles()
   return (
@@ -229,18 +190,7 @@ function App() {
           ) : (
             <Column className={classes.actions}>
               <TimeView value={time} max={partTime} />
-              <Row className={classes.buttons}>
-                <ActionButton
-                  icon={timerButtonIcon(status)}
-                  circle
-                  onClick={handleTimerButton}
-                />
-                <ActionButton
-                  icon={<SkipNext />}
-                  circle
-                  onClick={handleNextButton}
-                />
-              </Row>
+              <TimerButtons status={status} time={time} />
             </Column>
           )}
           <Row className={classes.settings}>
