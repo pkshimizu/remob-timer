@@ -23,6 +23,7 @@ import TypistView from './components/TypistView'
 import VersionChecker from './components/VersionChecker'
 import VersionView from './components/VersionView'
 import TimerButtons from './components/TimerButtons'
+import BellButton from './components/BellButton'
 
 const useStyles = makeStyles({
   root: {
@@ -38,6 +39,13 @@ const useStyles = makeStyles({
     '& > *': {
       margin: 8,
     },
+  },
+  bellRow: {
+    position: 'relative',
+  },
+  bell: {
+    position: 'absolute',
+    left: 32,
   },
 })
 
@@ -71,11 +79,13 @@ function App() {
     endTime: 0,
     timerType: 'DECREMENTAL',
     onTimeOver: () => {
-      finishAudio.play()
+      if (!settings.silent) {
+        finishAudio.play()
+      }
       dispatch(changeTimerState(TimerState.stopped, 0))
     },
     onCoolDownTimeOver: () => {
-      if (states.intervalPart === IntervalPart.work) {
+      if (states.intervalPart === IntervalPart.work && !settings.silent) {
         coolDownAudio.play()
       }
     },
@@ -134,7 +144,9 @@ function App() {
       case 'RUNNING':
         switch (states.timerState) {
           case TimerState.stopped:
-            finishAudio.play()
+            if (!settings.silent) {
+              finishAudio.play()
+            }
             stop()
             break
           case TimerState.paused:
@@ -185,6 +197,9 @@ function App() {
         <Column>
           <IntervalPartLabel />
           <TypistView />
+          <Row className={classes.bellRow}>
+            <BellButton className={classes.bell} />
+          </Row>
           {states.timerState === TimerState.stopped ? (
             <PartSelectButtons />
           ) : (

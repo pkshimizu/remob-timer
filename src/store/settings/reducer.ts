@@ -8,6 +8,7 @@ const initState: Settings = {
   longBreakTime: 15 * 60,
   typistSelectionType: TypistSelectType.rotation,
   adsense: true,
+  silent: false,
 }
 
 const settingsReducer = (state = initState, action: SettingsActionTypes) => {
