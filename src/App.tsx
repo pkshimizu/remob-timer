@@ -46,6 +46,7 @@ const useStyles = makeStyles({
   bell: {
     position: 'absolute',
     left: 32,
+    zIndex: 100
   },
 })
 
